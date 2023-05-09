@@ -17,17 +17,12 @@ queue_t alive_thread_queue;
 queue_t zombie_thread_queue;
 
 struct uthread_tcb {
-	struct state thread_state;
+	enum state thread_state;
 	void* stack;
 	uthread_ctx_t *thread_context;
 };
 
-struct state{
-	bool running;
-	bool ready;
-	bool blocked;
-	bool zombie;
-};
+enum state{running, ready, blocked, zombie};
 
 
 
@@ -58,6 +53,7 @@ void uthread_exit(void)
  *
  * This function shall never return.
  */
+
 }
 
 int uthread_create(uthread_func_t func, void *arg)
@@ -73,6 +69,23 @@ int uthread_create(uthread_func_t func, void *arg)
  * Return: 0 in case of success, -1 in case of failure (e.g., memory allocation,
  * context creation).
  */
+
+	struct uthread_tcb *new_thread = (struct uthread_tcb*)malloc(sizeof(struct uthread_tcb));
+	//set the current stack's state
+	new_thread->thread_state = ready;
+	//allocate current stack's memory 
+	new_thread->stack = uthread_ctx_alloc_stack;
+	//initialize the thread's context
+	new_thread->thread_context = (uthread_ctx_t *)malloc(sizeof(uthread_ctx_t));
+	uthread_ctx_init(current->thread_context, current->stack, func, arg);
+	//enqueue the thread into the queue
+	queue_enqueue(alive_thread_queue, new_thread);
+
+	if(new_thread == NULL){
+		return -1;
+	}
+
+	return 0;
 }
 
 int uthread_run(bool preempt, uthread_func_t func, void *arg)
@@ -85,7 +98,8 @@ int uthread_run(bool preempt, uthread_func_t func, void *arg)
  *
  * This function should only be called by the process' original execution
  * thread. It starts the multithreading scheduling library, and becomes the
- * "idle" thread. It returns once all the threads have finished running.
+ * "idle" thread. It returns once all the threads ha
+ * ve finished running.
  *
  * If @preempt is `true`, then preemptive scheduling is enabled.
  *
@@ -95,22 +109,22 @@ int uthread_run(bool preempt, uthread_func_t func, void *arg)
 	if(preempt){
 		preempt_enable();
 	}
+	//create the idle_thread
 	struct uthread_tcb *idle_thread = (struct uthread_tcb*)malloc(sizeof(struct uthread_tcb));
 	if(idle_thread == NULL){
 		return -1;
 	}
 	current = idle_thread;
 	//set the current stack's state
-	current->thread_state.running = true;
-	current->thread_state.ready = false;
-	current->thread_state.blocked = false;
-	current->thread_state.zombie = false;
+	current->thread_state = running;
 	//allocate current stack's memory 
 	current->stack = uthread_ctx_alloc_stack;
 	//initialize the thread's context
 	current->thread_context = (uthread_ctx_t *)malloc(sizeof(uthread_ctx_t));
 	uthread_ctx_init(current->thread_context, current->stack, func, arg);
 
+	// create the very first thread into the alive queue
+	uthread_create(func, arg);
 
 	while(alive_thread_queue != 0){
 		while(zombie_thread_queue != 0){
