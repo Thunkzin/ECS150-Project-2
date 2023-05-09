@@ -128,6 +128,47 @@ int queue_delete(queue_t queue, void *data)
  * Return: -1 if @queue or @data are NULL, of if @data was not found in the
  * queue. 0 if @data was found and deleted from @queue.
  */
+	if(queue == NULL || data == NULL){
+        	return -1;
+  	  }
+
+	element_t current = queue->first;
+	element_t previous = NULL;
+	int current_node_number = 0;
+	int found = 0;
+
+	/* iterate through the queue to find the data */
+	while (current_node_number < queue_length(queue)) {
+		if(*current->element_data_address == data){
+			found = 1;
+			break;
+		}
+		/* move to next node */
+		previous = current;
+		current = current->next_element;
+		current_node_number++;
+
+	}
+	if(!found){
+		return -1;
+	}
+	/* delete the node with matching data */
+	/* current is at first node */
+	if(previous == NULL){
+		queue->first = current->next_element; // the node next to current become first node.
+	}
+	/* current is not at first node and it's somewhere in between */
+	else {
+		previous->next_element = current->next_element;
+	}
+	/* if current is at the last node */
+	if (current == queue->last) {
+		queue->last = previous;
+	}
+	queue->queue_size =- 1;
+	free(current);
+	return 0;
+}
 }
 
 int queue_iterate(queue_t queue, queue_func_t func)
