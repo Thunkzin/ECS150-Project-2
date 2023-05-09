@@ -39,13 +39,15 @@ queue_t queue_create(void)
  * the new queue.
 */
 	queue_t created_queue = (queue_t)malloc(sizeof(struct queue));
+	if(created_queue == NULL){
+		return NULL;
+	}
+
 	created_queue->queue_size = 0;
 	created_queue->first = NULL;
 	created_queue->last = NULL;
 	 
-	if(perror() == -1){
-		return NULL;
-	}
+
 	return created_queue;
 }
 
@@ -82,7 +84,7 @@ int queue_enqueue(queue_t queue, void *data)
 	if(queue == NULL || data == NULL){
 		return -1;
 	}
-	element_t element_to_be_enqueued;
+	element_t element_to_be_enqueued = NULL;
 	element_to_be_enqueued->element_data_address = data;
 	queue->last->next_element = element_to_be_enqueued;
 	queue->last = element_to_be_enqueued;
@@ -139,7 +141,7 @@ int queue_delete(queue_t queue, void *data)
 
 	/* iterate through the queue to find the data */
 	while (current_node_number < queue_length(queue)) {
-		if(*current->element_data_address == data){
+		if(current->element_data_address == data){
 			found = 1;
 			break;
 		}
@@ -165,11 +167,11 @@ int queue_delete(queue_t queue, void *data)
 	if (current == queue->last) {
 		queue->last = previous;
 	}
-	queue->queue_size =- 1;
+	queue->queue_size -= 1;
 	free(current);
 	return 0;
 }
-}
+
 
 int queue_iterate(queue_t queue, queue_func_t func)
 {
