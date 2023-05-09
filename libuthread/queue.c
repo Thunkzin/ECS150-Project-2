@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 #include "queue.h"
 
@@ -46,8 +47,6 @@ queue_t queue_create(void)
 	created_queue->queue_size = 0;
 	created_queue->first = NULL;
 	created_queue->last = NULL;
-	 
-
 	return created_queue;
 }
 
@@ -84,10 +83,17 @@ int queue_enqueue(queue_t queue, void *data)
 	if(queue == NULL || data == NULL){
 		return -1;
 	}
-	element_t element_to_be_enqueued = NULL;
+	element_t element_to_be_enqueued = (element_t)malloc(sizeof(struct element));
 	element_to_be_enqueued->element_data_address = data;
-	queue->last->next_element = element_to_be_enqueued;
-	queue->last = element_to_be_enqueued;
+	element_to_be_enqueued->next_element = NULL;
+	if(queue->queue_size == 0){
+		/*If the item to be enqueue is the first item*/
+		queue->first = element_to_be_enqueued;
+		queue->last = element_to_be_enqueued;
+	}else{
+		queue->last->next_element = element_to_be_enqueued;
+		queue->last = element_to_be_enqueued;
+	}
 	
 	queue->queue_size ++;
 	return 0;
@@ -109,7 +115,7 @@ int queue_dequeue(queue_t queue, void **data)
 	if(queue == NULL || data == NULL || queue_length(queue) == 0){
 		return -1;
 	}
-	element_t element_to_be_dequeued;	
+	element_t element_to_be_dequeued = (element_t)malloc(sizeof(struct element));
 	element_to_be_dequeued = queue->first;
 	*data = element_to_be_dequeued->element_data_address;
 	queue->first = element_to_be_dequeued->next_element;
