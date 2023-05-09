@@ -118,14 +118,16 @@ int queue_dequeue(queue_t queue, void **data)
 int queue_delete(queue_t queue, void *data)
 {
 /*
- * queue_func_t - Queue callback function type
- * @queue: Queue to which item belongs
- * @data: Data item
+ * queue_delete - Delete data item
+ * @queue: Queue in which to delete item
+ * @data: Data to delete
  *
- * Function to be run on each item using queue_iterate(). The current item is
- * received as @data.
+ * Find in queue @queue, the first (ie oldest) item equal to @data and delete
+ * this item.
+ *
+ * Return: -1 if @queue or @data are NULL, of if @data was not found in the
+ * queue. 0 if @data was found and deleted from @queue.
  */
-
 }
 
 int queue_iterate(queue_t queue, queue_func_t func)
@@ -144,7 +146,27 @@ int queue_iterate(queue_t queue, queue_func_t func)
  *
  * Return: -1 if @queue or @func are NULL, 0 otherwise.
  */
+	if(queue == NULL || func == NULL){
+		return -1;
+	}
+	element_t current_element = queue->first;
+	for(int current_element_number = 0; current_element_number < queue_length(queue); ++current_element_number){
+		func(queue, current_element->element_data_address);
+		current_element = current_element->next_element;
+	}
+	return 0;
 }
+/*
+ * typedef void (*queue_func_t)(queue_t queue, void *data);
+
+ * queue_func_t - Queue callback function type
+ * @queue: Queue to which item belongs
+ * @data: Data item
+ *
+ * Function to be run on each item using queue_iterate(). The current item is
+ * received as @data.
+ */
+
 
 int queue_length(queue_t queue)
 {
