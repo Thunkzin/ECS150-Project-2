@@ -39,9 +39,6 @@ queue_t queue_create(void)
  * the new queue.
 */
 	queue_t created_queue = (queue_t)malloc(sizeof(struct queue));
-	if(created_queue == NULL){
-		return NULL;
-	}
 	created_queue->queue_size = 0;
 	created_queue->first = NULL;
 	created_queue->last = NULL;
