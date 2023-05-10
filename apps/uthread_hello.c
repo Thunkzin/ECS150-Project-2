@@ -16,7 +16,7 @@ void hello(void *arg)
 
 int main(void)
 {
-	uthread_run(hello, NULL);
+	uthread_start(hello, NULL);
 
 	return 0;
 }
