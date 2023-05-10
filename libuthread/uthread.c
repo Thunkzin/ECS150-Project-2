@@ -22,12 +22,15 @@ struct uthread_tcb {
 	uthread_ctx_t *thread_context;
 };
 
-enum state{running, ready, blocked, zombie};
+enum state{	
+	running, 
+	ready, 
+	blocked, 
+	zombie
+};
 
 
-
-struct uthread_tcb *uthread_current(void)
-{
+struct uthread_tcb *uthread_current(void){
 	return current;
 }
 
@@ -39,16 +42,31 @@ void uthread_yield(void)
  * This function is to be called from the currently active and running thread in
  * order to yield for other threads to execute.
  */
-	perror("Exiting current thread.\n");
-	/* set the current thread to zombie when exit func is called */
-	current->thread_state = zombie;
-	/* enqueue the current thread onto zombie_thread_queue */
-	queue_enqueue(zombie_thread_queue,current);
-	/* yield */
-	uthread_yield();
 
-	/* trigger an error and terminate in case current thread continue to execute after call to unthread_exit  */
-	assert(false);
+	if(current->thread_state == running){
+		//set the currently running thread's state into ready
+		current->thread_state == ready;
+		//put the ready thread into the alive_queue to wait for next run
+		queue_enqueue(alive_thread_queue, current);
+	}
+
+	struct uthread_tcb *popped_out_thread;
+	//pop out the oldest thread from the queue, and store it into popped_out_thread
+	if(queue_dequeue(alive_thread_queue, popped_out_thread) != 0){
+		//if error occurs, return
+		return;
+	}
+	struct uthread_tcb *current_thread_snap_shot = uthread_current();
+
+	if(popped_out_thread->thread_state == ready){
+		//set the popped_out_thread into running
+		popped_out_thread->thread_state == running;	
+		//turn current thread into the popped_out_thread (the snap shot is taken so it's fine)
+		current = popped_out_thread;
+		//switch the context between thread_snap_shot and popped_out_thread.
+		uthread_ctx_switch(current_thread_snap_shot->thread_context, popped_out_thread->thread_context);
+	}
+
 }
 
 void uthread_exit(void)
