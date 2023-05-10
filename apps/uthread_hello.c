@@ -4,7 +4,6 @@
  * Tests the creation of a single thread and its successful return.
  */
 
-#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -12,14 +11,12 @@
 
 void hello(void *arg)
 {
-	(void)arg;
-
 	printf("Hello world!\n");
 }
 
 int main(void)
 {
-	uthread_run(false, hello, NULL);
+	uthread_run(hello, NULL);
 
 	return 0;
 }
