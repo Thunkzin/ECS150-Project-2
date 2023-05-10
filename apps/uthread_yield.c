@@ -48,4 +48,3 @@ int main(void)
 	uthread_run(false, thread1, NULL);
 	return 0;
 }
-
