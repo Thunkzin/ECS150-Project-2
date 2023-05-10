@@ -5,10 +5,9 @@
 
 #include "queue.h"
 
-
 typedef struct element* element_t;
 
-struct element {
+struct element{
 	void *element_data_address;
 	struct element *next_element;
 };
@@ -43,7 +42,6 @@ queue_t queue_create(void)
 	if(created_queue == NULL){
 		return NULL;
 	}
-
 	created_queue->queue_size = 0;
 	created_queue->first = NULL;
 	created_queue->last = NULL;
@@ -116,10 +114,18 @@ int queue_dequeue(queue_t queue, void **data)
 		return -1;
 	}
 	element_t element_to_be_dequeued = (element_t)malloc(sizeof(struct element));
-	element_to_be_dequeued = queue->first;
-	*data = element_to_be_dequeued->element_data_address;
-	queue->first = element_to_be_dequeued->next_element;
-	queue->queue_size -= 1;
+	if(queue_length(queue) == 1){
+		element_to_be_dequeued = queue->first;
+		*data = element_to_be_dequeued->element_data_address;
+		queue->first = NULL;
+		queue->last = NULL;
+		queue->queue_size = 0;
+	}else{
+		element_to_be_dequeued = queue->first;
+		*data = element_to_be_dequeued->element_data_address;
+		queue->first = element_to_be_dequeued->next_element;
+		queue->queue_size -= 1;
+	}
 	return 0;
 }
 
