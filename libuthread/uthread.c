@@ -173,13 +173,12 @@ int uthread_run(bool preempt, uthread_func_t func, void *arg)
 	return 0;
 }
 
-// void uthread_block(void)
-// {
-// 	/* TODO Phase 3 */
-// }
+void uthread_block(void)
+{
+	/* TODO Phase 3 */
+}
 
-// void uthread_unblock(struct uthread_tcb *uthread)
-// {
-// 	/* TODO Phase 3 */
-// }
-
+void uthread_unblock(struct uthread_tcb *uthread)
+{
+	/* TODO Phase 3 */
+}
