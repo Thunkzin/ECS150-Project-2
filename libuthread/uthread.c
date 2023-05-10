@@ -163,7 +163,7 @@ int uthread_run(bool preempt, uthread_func_t func, void *arg)
 	idle_thread->thread_state = running;
 	current = idle_thread;
 	//allocate current stack's memory 
-	current->stack = uthread_ctx_alloc_stack;
+	current->stack = uthread_ctx_alloc_stack();
 
 	uthread_ctx_init(current->thread_context, current->stack, func, arg);
 
