@@ -4,8 +4,10 @@
  * Tests the creation of a single thread and its successful return.
  */
 
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+
 
 #include <uthread.h>
 
