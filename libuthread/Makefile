@@ -1,5 +1,5 @@
 lib := libuthread.a 
-objects := queue.o uthread.o context.o preempt.o sem.o
+objects := queue.o uthread.o context.o #preempt.o sem.o
 flags := -Wall -Wextra -Werror -g
 
 all: $(lib)
@@ -18,8 +18,8 @@ context.o: context.c private.h uthread.h preempt.c
 # sem.o: sem.c sem.h private.h queue.h uthread.h
 # 	gcc $(flags) -c  sem.c
 
-preempt.o: preempt.c private.h uthread.h
-	gcc $(flags) -c preempt.c
+#preempt.o: preempt.c private.h uthread.h
+#	gcc $(flags) -c preempt.c
 
 clean:
 	rm -f $(lib)
