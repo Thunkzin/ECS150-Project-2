@@ -17,17 +17,12 @@ queue_t alive_thread_queue;
 queue_t zombie_thread_queue;
 
 struct uthread_tcb {
-	enum state thread_state;
+	enum { running, ready, blocked, zombie} thread_state;
 	void* stack;
 	uthread_ctx_t *thread_context;
 };
 
-enum state{	
-	running, 
-	ready, 
-	blocked, 
-	zombie
-};
+
 
 
 struct uthread_tcb *uthread_current(void){
@@ -45,14 +40,14 @@ void uthread_yield(void)
 
 	if(current->thread_state == running){
 		//set the currently running thread's state into ready
-		current->thread_state == ready;
+		current->thread_state = ready;
 		//put the ready thread into the alive_queue to wait for next run
 		queue_enqueue(alive_thread_queue, current);
 	}
 
 	struct uthread_tcb *popped_out_thread;
 	//pop out the oldest thread from the queue, and store it into popped_out_thread
-	if(queue_dequeue(alive_thread_queue, popped_out_thread) != 0){
+	if(queue_dequeue(alive_thread_queue, (void**)popped_out_thread) != 0){
 		//if error occurs, return
 		return;
 	}
@@ -60,7 +55,7 @@ void uthread_yield(void)
 
 	if(popped_out_thread->thread_state == ready){
 		//set the popped_out_thread into running
-		popped_out_thread->thread_state == running;	
+		popped_out_thread->thread_state = running;	
 		//turn current thread into the popped_out_thread (the snap shot is taken so it's fine)
 		current = popped_out_thread;
 		//switch the context between thread_snap_shot and popped_out_thread.
@@ -166,7 +161,7 @@ int uthread_run(bool preempt, uthread_func_t func, void *arg)
 		while(zombie_thread_queue != 0){
 			struct uthread_tcb *zombie_thread;
 			//move the dequeued data into zombie_thread's context, then remove the thread
-			queue_dequeue(zombie_thread_queue, zombie_thread->thread_context);
+			queue_dequeue(zombie_thread_queue, (void**)zombie_thread->thread_context);
 			free(zombie_thread->thread_context);
 			uthread_ctx_destroy_stack(zombie_thread->stack);
 		}
@@ -176,13 +171,13 @@ int uthread_run(bool preempt, uthread_func_t func, void *arg)
 	return 0;
 }
 
-void uthread_block(void)
-{
-	/* TODO Phase 3 */
-}
+// void uthread_block(void)
+// {
+// 	/* TODO Phase 3 */
+// }
 
-void uthread_unblock(struct uthread_tcb *uthread)
-{
-	/* TODO Phase 3 */
-}
+// void uthread_unblock(struct uthread_tcb *uthread)
+// {
+// 	/* TODO Phase 3 */
+// }
 
