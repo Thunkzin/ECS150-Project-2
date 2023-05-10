@@ -9,7 +9,7 @@
 #include "private.h"
 #include "uthread.h"
 #include "queue.h"
-#include "preempt.c"
+//#include "preempt.c"
 
 
 
@@ -122,7 +122,7 @@ int uthread_create(uthread_func_t func, void *arg)
 	return 0;
 }
 
-int uthread_run(uthread_func_t func, void *arg)
+int uthread_run(bool preempt, uthread_func_t func, void *arg)
 {
 /*
  * uthread_run - Run the multithreading library
@@ -141,9 +141,10 @@ int uthread_run(uthread_func_t func, void *arg)
  * context creation).
  */
 
-	// if(preempt){
-	// 	preempt_enable();
-	// }
+	if(preempt){
+		int i = 0;
+		i++;
+	}
 
 
 	//create the idle_thread
