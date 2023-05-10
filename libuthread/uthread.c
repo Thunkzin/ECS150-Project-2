@@ -156,11 +156,14 @@ int uthread_run(bool preempt, uthread_func_t func, void *arg)
 	//initialize the thread's context
 	idle_thread->thread_context = (uthread_ctx_t *)malloc(sizeof(uthread_ctx_t));
 
+
+
 	//set the current stack's state
 	idle_thread->thread_state = running;
-	//allocate current stack's memory 
-	idle_thread->stack = uthread_ctx_alloc_stack;
 	current = idle_thread;
+	//allocate current stack's memory 
+	current->stack = uthread_ctx_alloc_stack;
+
 	uthread_ctx_init(current->thread_context, current->stack, func, arg);
 
 	// create the very first thread into the alive queue
@@ -170,7 +173,7 @@ int uthread_run(bool preempt, uthread_func_t func, void *arg)
 		while(zombie_thread_queue != 0){
 			struct uthread_tcb *zombie_thread;
 			//move the dequeued data into zombie_thread's context, then remove the thread
-			queue_dequeue(zombie_thread_queue, (void**)zombie_thread->thread_context);
+			queue_dequeue(zombie_thread_queue, (void**)&zombie_thread);
 			free(zombie_thread->thread_context);
 			uthread_ctx_destroy_stack(zombie_thread->stack);
 		}
