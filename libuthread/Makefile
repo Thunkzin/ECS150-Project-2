@@ -9,7 +9,10 @@ $(lib): $(objects)
 queue.o: queue.c queue.h
 	gcc	$(flags) -c  queue.c
 
-uthread.o: uthread.c uthread.h
+context.o: context.c private.h
+	gcc	$(flags) -c  context.c
+
+uthread.o: uthread.c uthread.h private.h queue.h
 	gcc	$(flags) -c  uthread.c
 	
 clean:
