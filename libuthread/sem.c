@@ -119,9 +119,7 @@ int sem_up(sem_t sem)
 	sem->sem_count += 1;
 	if(queue_length(sem->waiting_queue) > 0){
 		struct uthread_tcb *first_thread;
-		preempt_disable();
 		queue_dequeue(sem->waiting_queue, (void**)&first_thread);
-		preempt_enable();
 		uthread_unblock(first_thread);
 	}
 	return 0;
