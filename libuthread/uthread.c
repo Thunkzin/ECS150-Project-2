@@ -110,7 +110,7 @@ int uthread_create(uthread_func_t func, void *arg)
 	//set the current stack's state
 	new_thread->thread_state = ready;
 	//allocate current stack's memory 
-	new_thread->stack = uthread_ctx_alloc_stack;
+	new_thread->stack = uthread_ctx_alloc_stack();
 	//initialize the thread's context
 	uthread_ctx_init(new_thread->thread_context, new_thread->stack, func, arg);
 	//enqueue the thread into the queue
