@@ -156,9 +156,9 @@ int uthread_run(bool preempt, uthread_func_t func, void *arg)
 		return -1;
 	}
 
-	//line making error***
-	alive_thread_queue = queue_create();
-	zombie_thread_queue = queue_create();
+	//line making errors ***
+	// alive_thread_queue = queue_create();
+	// zombie_thread_queue = queue_create();
 
 	//initialize the thread's context
 	idle_thread->thread_context = (uthread_ctx_t *)malloc(sizeof(uthread_ctx_t));
