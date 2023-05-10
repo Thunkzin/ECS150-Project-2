@@ -5,11 +5,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/time.h>
-
 #include "private.h"
 #include "uthread.h"
 #include "queue.h"
 
+#define _XOPEN_SOURCE
+#include <ucontext.h>
 
 
 struct uthread_tcb *current;
@@ -45,7 +46,7 @@ void uthread_yield(void)
 		queue_enqueue(alive_thread_queue, current);
 	}
 
-	struct uthread_tcb *popped_out_thread;
+	struct uthread_tcb *popped_out_thread = NULL;
 	//pop out the oldest thread from the queue, and store it into popped_out_thread
 	if(queue_dequeue(alive_thread_queue, (void**)popped_out_thread) != 0){
 		//if error occurs, return
@@ -173,12 +174,16 @@ int uthread_run(bool preempt, uthread_func_t func, void *arg)
 	return 0;
 }
 
-void uthread_block(void)
-{
-	/* TODO Phase 3 */
-}
+// void uthread_block(void)
+// {
+// 	current->thread_state = blocked;
+// }
 
-void uthread_unblock(struct uthread_tcb *uthread)
-{
-	/* TODO Phase 3 */
-}
+// void uthread_unblock(struct uthread_tcb *uthread)
+// {
+// 	preempt_enable();
+// 	preempt_disable();
+// 	queue_enqueue(alive_thread_queue, uthread);
+// 	preempt_enable();
+// 	return;
+// }
