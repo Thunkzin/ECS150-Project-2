@@ -1,5 +1,5 @@
 lib := libuthread.a 
-# objects := queue.o uthread.o context.o sem.o preempt.o 
+objects := queue.o uthread.o context.o# sem.o preempt.o 
 flags := -Wall -Wextra -Werror -g
 
 all: $(lib)
