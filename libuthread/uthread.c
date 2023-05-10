@@ -104,7 +104,6 @@ int uthread_create(uthread_func_t func, void *arg)
  * Return: 0 in case of success, -1 in case of failure (e.g., memory allocation,
  * context creation).
  */
-	printf("hello");
 	struct uthread_tcb *new_thread = (struct uthread_tcb*)malloc(sizeof(struct uthread_tcb));
 	new_thread->thread_context = (uthread_ctx_t *)malloc(sizeof(uthread_ctx_t));
 	//set the current stack's state
@@ -119,7 +118,7 @@ int uthread_create(uthread_func_t func, void *arg)
 	if(new_thread == NULL){
 		return -1;
 	}
-
+	printf("create successed");
 	return 0;
 }
 
