@@ -169,7 +169,7 @@ int uthread_run(bool preempt, uthread_func_t func, void *arg)
 
 	// create the very first thread into the alive queue
 	uthread_create(func, arg);
-	printf("Hello world!\n");
+
 	while(alive_thread_queue != NULL){
 		while(zombie_thread_queue != NULL){
 			struct uthread_tcb *zombie_thread;
