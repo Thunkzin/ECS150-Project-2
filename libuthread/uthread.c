@@ -13,10 +13,11 @@
 
 
 
-
+//global variable
 struct uthread_tcb *current;
 queue_t alive_thread_queue;
 queue_t zombie_thread_queue;
+
 
 struct uthread_tcb {
 	enum { running, ready, blocked, zombie} thread_state;
@@ -190,10 +191,10 @@ int uthread_run(bool preempt, uthread_func_t func, void *arg)
 	return 0;
 }
 
-/*
+
 void uthread_block(void)
 {
-	//change the state and yield the thread into the queue
+	//change the state of thread and yield to next thread
 	current->thread_state = blocked;
 	uthread_yield();
 	return;
@@ -201,8 +202,8 @@ void uthread_block(void)
 
 void uthread_unblock(struct uthread_tcb *uthread)
 {
+	//change the state of thread and put the thread into the queue
 	uthread->thread_state = ready;
 	queue_enqueue(alive_thread_queue, uthread);
 	return;
 }
-*/
