@@ -38,6 +38,6 @@ void thread1(void *arg)
 
 int main(void)
 {
-	uthread_run(thread1, NULL);
+	uthread_start(thread1, NULL);
 	return 0;
 }
