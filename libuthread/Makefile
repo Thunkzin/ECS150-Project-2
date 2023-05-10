@@ -1,5 +1,5 @@
 lib := libuthread.a 
-objects := queue.o uthread.o 
+objects := queue.o #uthread.o context.o
 flags := -Wall -Wextra -Werror
 
 all: $(lib)
@@ -9,10 +9,10 @@ $(lib): $(objects)
 queue.o: queue.c queue.h
 	gcc	$(flags) -c  queue.c
 
-context.o: context.c private.h
+# context.o: context.c private.h
 	gcc	$(flags) -c  context.c
 
-uthread.o: uthread.c uthread.h private.h queue.h
+# uthread.o: uthread.c uthread.h private.h queue.h
 	gcc	$(flags) -c  uthread.c
 	
 clean:
