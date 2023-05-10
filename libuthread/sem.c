@@ -7,7 +7,7 @@
 
 struct semaphore {
 	size_t sem_count;
-	queue_t waiting_queue;
+	queue_t *waiting_queue;
 };
 
 sem_t sem_create(size_t count)
@@ -111,5 +111,19 @@ int sem_up(sem_t sem)
  *
  * Return: -1 if @sem is NULL. 0 if semaphore was successfully released.
  */
+
+	if(sem == NULL){
+		return -1;
+	}
+	/*internal count increase by one and the first thread gets unblocked*/
+	sem->sem_count += 1;
+	if(queue_length(sem->waiting_queue) > 0){
+		struct uthread_tcb *first_thread;
+		preempt_disable();
+		queue_dequeue(sem->waiting_queue, (void**)&first_thread);
+		preempt_enable();
+		uthread_unblock(first_thread);
+	}
+	return 0;
 }
 
