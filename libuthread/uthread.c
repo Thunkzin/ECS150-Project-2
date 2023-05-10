@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <sys/time.h>
 
+
 #include "private.h"
 #include "uthread.h"
 #include "queue.h"
@@ -105,13 +106,13 @@ int uthread_create(uthread_func_t func, void *arg)
  */
 
 	struct uthread_tcb *new_thread = (struct uthread_tcb*)malloc(sizeof(struct uthread_tcb));
+	new_thread->thread_context = (uthread_ctx_t *)malloc(sizeof(uthread_ctx_t));
 	//set the current stack's state
 	new_thread->thread_state = ready;
 	//allocate current stack's memory 
 	new_thread->stack = uthread_ctx_alloc_stack;
 	//initialize the thread's context
-	new_thread->thread_context = (uthread_ctx_t *)malloc(sizeof(uthread_ctx_t));
-	uthread_ctx_init(current->thread_context, current->stack, func, arg);
+	uthread_ctx_init(new_thread->thread_context, new_thread->stack, func, arg);
 	//enqueue the thread into the queue
 	queue_enqueue(alive_thread_queue, new_thread);
 
