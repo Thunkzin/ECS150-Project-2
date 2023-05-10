@@ -139,8 +139,8 @@ int uthread_run(bool preempt, uthread_func_t func, void *arg)
  * Return: 0 in case of success, -1 in case of failure (e.g., memory allocation,
  * context creation).
  */
-	queue_t alive_thread_queue = queue_create();
-	queue_t zombie_thread_queue = queue_create();
+
+
 	//use preempt for something
 	if(preempt){
 		int i = 0;
@@ -155,7 +155,8 @@ int uthread_run(bool preempt, uthread_func_t func, void *arg)
 		return -1;
 	}
 	
-	
+	alive_thread_queue = queue_create();
+	zombie_thread_queue = queue_create();
 
 	//initialize the thread's context
 	idle_thread->thread_context = (uthread_ctx_t *)malloc(sizeof(uthread_ctx_t));
