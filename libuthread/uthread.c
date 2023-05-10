@@ -122,7 +122,7 @@ int uthread_create(uthread_func_t func, void *arg)
 	return 0;
 }
 
-int uthread_run(bool preempt, uthread_func_t func, void *arg)
+int uthread_run(uthread_func_t func, void *arg)
 {
 /*
  * uthread_run - Run the multithreading library
@@ -140,9 +140,12 @@ int uthread_run(bool preempt, uthread_func_t func, void *arg)
  * Return: 0 in case of success, -1 in case of failure (e.g., memory allocation,
  * context creation).
  */
-	if(preempt){
-		preempt_enable();
-	}
+
+	// if(preempt){
+	// 	preempt_enable();
+	// }
+
+
 	//create the idle_thread
 	struct uthread_tcb *idle_thread = (struct uthread_tcb*)malloc(sizeof(struct uthread_tcb));
 	if(idle_thread == NULL){
