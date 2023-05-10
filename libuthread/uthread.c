@@ -112,14 +112,12 @@ int uthread_create(uthread_func_t func, void *arg)
 	new_thread->stack = uthread_ctx_alloc_stack();
 	//initialize the thread's context
 	uthread_ctx_init(new_thread->thread_context, new_thread->stack, func, arg);
-	printf("115 alive_thread_queue_length:%i\n", queue_length(alive_thread_queue));
 	//enqueue the thread into the queue
 	queue_enqueue(alive_thread_queue, new_thread);
 
 	if(new_thread == NULL){
 		return -1;
 	}
-	printf("122 alive_thread_queue_length:%i\n", queue_length(alive_thread_queue));
 	return 0;
 }
 
@@ -144,9 +142,10 @@ int uthread_run(bool preempt, uthread_func_t func, void *arg)
 
 	if(!preempt){
 		queue_t random_queue = queue_create();
+
 		printf("150 alive_thread_queue_length:%i\n", queue_length(random_queue));
 
-		// alive_thread_queue = queue_create();
+		alive_thread_queue = queue_create();
 		// zombie_thread_queue = queue_create();
 	}
 
