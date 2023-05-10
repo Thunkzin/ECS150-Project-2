@@ -152,7 +152,7 @@ int uthread_run(bool preempt, uthread_func_t func, void *arg)
 	if(idle_thread == NULL){
 		return -1;
 	}
-	printf("155\n");
+	
 	//initialize the thread's context
 	idle_thread->thread_context = (uthread_ctx_t *)malloc(sizeof(uthread_ctx_t));
 
@@ -162,15 +162,15 @@ int uthread_run(bool preempt, uthread_func_t func, void *arg)
 	idle_thread->stack = uthread_ctx_alloc_stack;
 	current = idle_thread;
 	uthread_ctx_init(current->thread_context, current->stack, func, arg);
-	printf("165\n");
+
 	// create the very first thread into the alive queue
 	uthread_create(func, arg);
-	printf("168\n");
+
 	while(alive_thread_queue != 0){
 		while(zombie_thread_queue != 0){
-			struct uthread_tcb *zombie_thread = NULL;
+			struct uthread_tcb *zombie_thread;
 			//move the dequeued data into zombie_thread's context, then remove the thread
-			queue_dequeue(zombie_thread_queue, (void**)zombie_thread->thread_context);
+			queue_dequeue(zombie_thread_queue, (void**)&zombie_thread);
 			free(zombie_thread->thread_context);
 			uthread_ctx_destroy_stack(zombie_thread->stack);
 		}
