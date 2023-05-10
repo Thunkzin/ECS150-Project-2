@@ -10,7 +10,7 @@
 #include "private.h"
 #include "uthread.h"
 #include "queue.h"
-//#include "preempt.c"
+#include "preempt.c"
 
 
 
@@ -141,7 +141,9 @@ int uthread_run(bool preempt, uthread_func_t func, void *arg)
  * Return: 0 in case of success, -1 in case of failure (e.g., memory allocation,
  * context creation).
  */
-	alive_thread_queue = queue_create();	
+	alive_thread_queue = queue_create();
+	zombie_thread_queue = queue_create();
+
 	if(preempt){
 		int i = 0;
 		i++;
@@ -185,16 +187,16 @@ int uthread_run(bool preempt, uthread_func_t func, void *arg)
 	return 0;
 }
 
-// void uthread_block(void)
-// {
-// 	current->thread_state = blocked;
-// }
+void uthread_block(void)
+{
+	current->thread_state = blocked;
+	uthread_yield();
+	return;
+}
 
-// void uthread_unblock(struct uthread_tcb *uthread)
-// {
-// 	preempt_enable();
-// 	preempt_disable();
-// 	queue_enqueue(alive_thread_queue, uthread);
-// 	preempt_enable();
-// 	return;
-// }
+void uthread_unblock(struct uthread_tcb *uthread)
+{
+	uthread->thread_state = ready;
+	queue_enqueue(alive_thread_queue, uthread);
+	return;
+}
