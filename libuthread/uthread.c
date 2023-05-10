@@ -161,7 +161,7 @@ int uthread_run(bool preempt, uthread_func_t func, void *arg)
 
 	while(alive_thread_queue != 0){
 		while(zombie_thread_queue != 0){
-			struct uthread_tcb *zombie_thread;
+			struct uthread_tcb *zombie_thread = NULL;
 			//move the dequeued data into zombie_thread's context, then remove the thread
 			queue_dequeue(zombie_thread_queue, (void**)zombie_thread->thread_context);
 			free(zombie_thread->thread_context);
