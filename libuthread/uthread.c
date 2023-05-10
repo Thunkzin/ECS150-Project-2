@@ -183,17 +183,35 @@ int uthread_run(bool preempt, uthread_func_t func, void *arg)
 	}
 	return 0;
 }
+void uthread_block(void)
+{
+/*
+ *
+ * uthread_block - Block currently running thread
+ */
+	/* get the TCB of currently running thread */
+	struct uthread_tcb *blocking_thread = uthread_current;
 
-// void uthread_block(void)
-// {
-// 	current->thread_state = blocked;
-// }
+	/* set the state of thread to blocked */
+	blocking_thread->thread_state = blocked;
 
-// void uthread_unblock(struct uthread_tcb *uthread)
-// {
-// 	preempt_enable();
-// 	preempt_disable();
-// 	queue_enqueue(alive_thread_queue, uthread);
-// 	preempt_enable();
-// 	return;
-// }
+	/* yield the CPU to other thread to run */
+	uthread_yield();
+}
+
+void uthread_unblock(struct uthread_tcb *uthread)
+{
+/* TODO Phase 3 
+ *
+ * uthread_unblock - Unblock thread
+ * @uthread: TCB of thread to unblock
+ */
+	/* if thread is not blocked, do nothing */
+	if(uthread->thread_state == blocked){
+		uthread->thread_state = ready;
+	}
+	else {
+		// do nothing
+		return;
+	}
+}
