@@ -152,13 +152,15 @@ int uthread_run(bool preempt, uthread_func_t func, void *arg)
 	if(idle_thread == NULL){
 		return -1;
 	}
-	current = idle_thread;
-	//set the current stack's state
-	current->thread_state = running;
-	//allocate current stack's memory 
-	current->stack = uthread_ctx_alloc_stack;
+
 	//initialize the thread's context
-	current->thread_context = (uthread_ctx_t *)malloc(sizeof(uthread_ctx_t));
+	idle_thread->thread_context = (uthread_ctx_t *)malloc(sizeof(uthread_ctx_t));
+
+	//set the current stack's state
+	idle_thread->thread_state = running;
+	//allocate current stack's memory 
+	idle_thread->stack = uthread_ctx_alloc_stack;
+	current = idle_thread;
 	uthread_ctx_init(current->thread_context, current->stack, func, arg);
 
 	// create the very first thread into the alive queue
