@@ -78,9 +78,7 @@ int queue_enqueue(queue_t queue, void *data)
  * Return: -1 if @queue or @data are NULL, or in case of memory allocation error
  * when enqueing. 0 if @data was successfully enqueued in @queue.
  */
-	if(queue == NULL || data == NULL){
-		return -1;
-	}
+
 	element_t element_to_be_enqueued = (element_t)malloc(sizeof(struct element));
 	element_to_be_enqueued->element_data_address = data;
 	element_to_be_enqueued->next_element = NULL;
@@ -94,6 +92,10 @@ int queue_enqueue(queue_t queue, void *data)
 	}
 	
 	queue->queue_size ++;
+	if(queue == NULL || data == NULL){
+		return -1;
+	}
+
 	return 0;
 }
 
