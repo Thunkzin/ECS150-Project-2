@@ -143,11 +143,13 @@ int uthread_run(bool preempt, uthread_func_t func, void *arg)
  */
 
 	if(!preempt){
-		alive_thread_queue = queue_create();
-		zombie_thread_queue = queue_create();
+		queue_t random_queue = queue_create();
+		printf("150 alive_thread_queue_length:%i\n", queue_length(random_queue));
+
+		// alive_thread_queue = queue_create();
+		// zombie_thread_queue = queue_create();
 	}
 
-	printf("150 alive_thread_queue_length:%i\n", queue_length(alive_thread_queue));
 
 	//create the idle_thread
 	struct uthread_tcb *idle_thread = (struct uthread_tcb*)malloc(sizeof(struct uthread_tcb));
