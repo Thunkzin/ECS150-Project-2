@@ -5,12 +5,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/time.h>
+
 #include "private.h"
 #include "uthread.h"
 #include "queue.h"
 
-#define _XOPEN_SOURCE
-#include <ucontext.h>
 
 
 struct uthread_tcb *current;
@@ -140,9 +139,9 @@ int uthread_run(bool preempt, uthread_func_t func, void *arg)
  * Return: 0 in case of success, -1 in case of failure (e.g., memory allocation,
  * context creation).
  */
-	if(preempt){
-		preempt_enable();
-	}
+	// if(preempt){
+	// 	preempt_enable();
+	// }
 	//create the idle_thread
 	struct uthread_tcb *idle_thread = (struct uthread_tcb*)malloc(sizeof(struct uthread_tcb));
 	if(idle_thread == NULL){
