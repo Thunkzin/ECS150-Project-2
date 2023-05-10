@@ -7,7 +7,7 @@
 
 struct semaphore {
 	size_t sem_count;
-	queue_t *waiting_queue;
+	struct queue_t *waiting_queue;
 };
 
 sem_t sem_create(size_t count)
@@ -115,7 +115,7 @@ int sem_up(sem_t sem)
 	if(sem == NULL){
 		return -1;
 	}
-	/*internal count increase by one and the first thread gets unblocked*/
+	/*sem_count increase by one*/
 	sem->sem_count += 1;
 	if(queue_length(sem->waiting_queue) > 0){
 		struct uthread_tcb *first_thread;
