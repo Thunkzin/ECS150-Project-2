@@ -169,10 +169,9 @@ int uthread_run(bool preempt, uthread_func_t func, void *arg)
 
 	// create the very first thread into the alive queue
 	uthread_create(func, arg);
-	printf("queue_length:%c", queue_length(alive_thread_queue));
-	while(queue_length(alive_thread_queue) != 0){
-		printf("174\n");
-		while(queue_length(zombie_thread_queue) != 0){
+	printf("alive_thread_queue_length:%c", queue_length(alive_thread_queue));
+	while(queue_length(alive_thread_queue) > 0){
+		while(queue_length(zombie_thread_queue) > 0){
 			struct uthread_tcb *zombie_thread;
 			//move the dequeued data into zombie_thread's context, then remove the thread
 			queue_dequeue(zombie_thread_queue, (void**)&zombie_thread);
