@@ -13,11 +13,10 @@
 
 
 
-//global variable
+
 struct uthread_tcb *current;
 queue_t alive_thread_queue;
 queue_t zombie_thread_queue;
-
 
 struct uthread_tcb {
 	enum { running, ready, blocked, zombie} thread_state;
@@ -113,12 +112,14 @@ int uthread_create(uthread_func_t func, void *arg)
 	new_thread->stack = uthread_ctx_alloc_stack();
 	//initialize the thread's context
 	uthread_ctx_init(new_thread->thread_context, new_thread->stack, func, arg);
+	printf("115 alive_thread_queue_length:%i\n", queue_length(alive_thread_queue));
 	//enqueue the thread into the queue
 	queue_enqueue(alive_thread_queue, new_thread);
 
 	if(new_thread == NULL){
 		return -1;
 	}
+	printf("122 alive_thread_queue_length:%i\n", queue_length(alive_thread_queue));
 	return 0;
 }
 
@@ -142,24 +143,19 @@ int uthread_run(bool preempt, uthread_func_t func, void *arg)
  */
 
 
-	//use preempt for something
 	if(preempt){
 		int i = 0;
 		i++;
 	}
 
-	
+	printf("150 alive_thread_queue_length:%i\n", queue_length(alive_thread_queue));
 
 	//create the idle_thread
 	struct uthread_tcb *idle_thread = (struct uthread_tcb*)malloc(sizeof(struct uthread_tcb));
 	if(idle_thread == NULL){
 		return -1;
 	}
-
-	//line making errors ***
-	// alive_thread_queue = queue_create();
-	// zombie_thread_queue = queue_create();
-
+	
 	//initialize the thread's context
 	idle_thread->thread_context = (uthread_ctx_t *)malloc(sizeof(uthread_ctx_t));
 
@@ -175,10 +171,9 @@ int uthread_run(bool preempt, uthread_func_t func, void *arg)
 
 	// create the very first thread into the alive queue
 	uthread_create(func, arg);
-	printf("172 alive_thread_queue_length:%i\n", queue_length(alive_thread_queue));
 
-	while(queue_length(alive_thread_queue) != 0){
-		while(queue_length(zombie_thread_queue) != 0){
+	while(queue_length(alive_thread_queue) > 0){
+		while(queue_length(zombie_thread_queue) > 0){
 			struct uthread_tcb *zombie_thread;
 			//move the dequeued data into zombie_thread's context, then remove the thread
 			queue_dequeue(zombie_thread_queue, (void**)&zombie_thread);
@@ -191,10 +186,8 @@ int uthread_run(bool preempt, uthread_func_t func, void *arg)
 	return 0;
 }
 
-
 void uthread_block(void)
 {
-	//change the state of thread and yield to next thread
 	current->thread_state = blocked;
 	uthread_yield();
 	return;
@@ -202,7 +195,6 @@ void uthread_block(void)
 
 void uthread_unblock(struct uthread_tcb *uthread)
 {
-	//change the state of thread and put the thread into the queue
 	uthread->thread_state = ready;
 	queue_enqueue(alive_thread_queue, uthread);
 	return;
