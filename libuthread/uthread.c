@@ -144,7 +144,7 @@ int uthread_run(bool preempt, uthread_func_t func, void *arg)
 	alive_thread_queue = queue_create();	
 	if(preempt){
 		int i = 0;
-		i = 1;
+		i++;
 	}
 
 	printf("150 alive_thread_queue_length:%i\n", queue_length(alive_thread_queue));
