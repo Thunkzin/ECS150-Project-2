@@ -11,6 +11,8 @@
 
 void hello(void *arg)
 {
+	(void)arg;
+
 	printf("Hello world!\n");
 }
 
