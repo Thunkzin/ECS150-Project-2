@@ -154,7 +154,8 @@ int uthread_run(bool preempt, uthread_func_t func, void *arg)
 	if(idle_thread == NULL){
 		return -1;
 	}
-	
+
+	//line making error***
 	alive_thread_queue = queue_create();
 	zombie_thread_queue = queue_create();
 
@@ -189,8 +190,10 @@ int uthread_run(bool preempt, uthread_func_t func, void *arg)
 	return 0;
 }
 
+/*
 void uthread_block(void)
 {
+	//change the state and yield the thread into the queue
 	current->thread_state = blocked;
 	uthread_yield();
 	return;
@@ -202,3 +205,4 @@ void uthread_unblock(struct uthread_tcb *uthread)
 	queue_enqueue(alive_thread_queue, uthread);
 	return;
 }
+*/
