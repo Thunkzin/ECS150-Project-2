@@ -24,7 +24,7 @@ typedef void (*uthread_func_t)(void *arg);
  * Return: 0 in case of success, -1 in case of failure (e.g., memory allocation,
  * context creation).
  */
-int uthread_run(bool preempt, uthread_func_t func, void *arg);
+int uthread_run( uthread_func_t func, void *arg);
 
 /*
  * uthread_create - Create a new thread
