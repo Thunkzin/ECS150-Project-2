@@ -118,7 +118,8 @@ int uthread_create(uthread_func_t func, void *arg)
 	if(new_thread == NULL){
 		return -1;
 	}
-	printf("create successed");
+	printf("create successed\n");
+	printf("alive_thread_queue_length:%i", queue_length(alive_thread_queue));
 	return 0;
 }
 
