@@ -141,11 +141,10 @@ int uthread_run(bool preempt, uthread_func_t func, void *arg)
  * Return: 0 in case of success, -1 in case of failure (e.g., memory allocation,
  * context creation).
  */
-	alive_thread_queue = queue_create();
 
-	if(preempt){
-		int i = 0;
-		i++;
+	if(!preempt){
+		alive_thread_queue = queue_create();
+		zombie_thread_queue = queue_create();
 	}
 
 	printf("150 alive_thread_queue_length:%i\n", queue_length(alive_thread_queue));
