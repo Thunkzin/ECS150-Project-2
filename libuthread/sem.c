@@ -7,7 +7,7 @@
 
 struct semaphore {
 	size_t sem_count;
-	struct queue_t *waiting_queue;
+	struct queue *waiting_queue;
 };
 
 sem_t sem_create(size_t count)
