@@ -79,6 +79,16 @@ void uthread_exit(void)
  *
  * This function shall never return.
  */
+	perror("Exiting current thread.\n");
+	/* set the current thread to zombie when exit func is called */
+	current->thread_state = zombie;
+	/* enqueue the current thread onto zombie_thread_queue */
+	queue_enqueue(zombie_thread_queue,current);
+	/* yield */
+	uthread_yield();
+
+	/* trigger an error and terminate in case current thread continue to execute after call to unthread_exit  */
+	assert(false);
 
 }
 
