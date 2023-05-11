@@ -50,6 +50,8 @@ void uthread_yield(void)
 	//pop out the oldest thread from the queue, and store it into popped_out_thread
 	if(queue_dequeue(alive_thread_queue, (void**)popped_out_thread) != 0){
 		//if error occurs, return
+		printf("line 53 error");
+
 		return;
 	}
 
@@ -140,7 +142,6 @@ int uthread_run(bool preempt, uthread_func_t func, void *arg)
 	if(!preempt){
 		alive_thread_queue = queue_create();
 		zombie_thread_queue = queue_create();
-		printf("line 146 alive_thread_queue_length:%i\n", queue_length(alive_thread_queue));
 	}
 
 
