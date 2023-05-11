@@ -139,11 +139,10 @@ int uthread_run(bool preempt, uthread_func_t func, void *arg)
  */
 
 	preempt_start(preempt);
-
+	preempt_enable();
 	alive_thread_queue = queue_create();
 	zombie_thread_queue = queue_create();
 	blocked_thread_queue = queue_create();
-
 
 
 	//create the idle_thread
@@ -170,8 +169,8 @@ int uthread_run(bool preempt, uthread_func_t func, void *arg)
 
 
 
-	while(queue_length(alive_thread_queue) > 0){
-		while(queue_length(zombie_thread_queue) > 0){
+	while(queue_length(alive_thread_queue) != 0){
+		while(queue_length(zombie_thread_queue) != 0){
 			struct uthread_tcb *zombie_thread;
 			//move the dequeued data into zombie_thread's context, then remove the thread
 			queue_dequeue(zombie_thread_queue, (void**)&zombie_thread);
