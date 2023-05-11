@@ -50,7 +50,7 @@ void uthread_yield(void)
 	struct uthread_tcb *popped_out_thread;
 	//pop out the oldest thread from the queue, and store it into popped_out_thread
 	queue_dequeue(alive_thread_queue, (void**)&popped_out_thread);
-
+	struct uthread_tcb *current_thread_snap_shot = uthread_current();
 	if(popped_out_thread->thread_state == ready){
 		//set the popped_out_thread into running
 		popped_out_thread->thread_state = running;	
@@ -58,7 +58,7 @@ void uthread_yield(void)
 		//turn current thread into the popped_out_thread (the snap shot is taken so it's fine)
 		current = popped_out_thread;
 		//switch the context between thread_snap_shot and popped_out_thread.
-		uthread_ctx_switch(current->thread_context, popped_out_thread->thread_context);
+		uthread_ctx_switch(current_thread_snap_shot->thread_context, popped_out_thread->thread_context);
 	}
 
 }
