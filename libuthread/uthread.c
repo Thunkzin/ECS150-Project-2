@@ -113,8 +113,6 @@ int uthread_create(uthread_func_t func, void *arg)
 	uthread_ctx_init(new_thread->thread_context, new_thread->stack, func, arg);
 	//enqueue the thread into the queue
 	queue_enqueue(alive_thread_queue, new_thread);
-	printf("line 116 alive_thread_queue_length:%i\n", queue_length(alive_thread_queue));
-
 	if(new_thread == NULL){
 		return -1;
 	}
@@ -170,8 +168,8 @@ int uthread_run(bool preempt, uthread_func_t func, void *arg)
 	// create the very first thread into the alive queue
 	uthread_create(func, arg);
 
-	return 0;
 
+	int loop_time = 0;
 	while(queue_length(alive_thread_queue) > 0){
 		while(queue_length(zombie_thread_queue) > 0){
 			struct uthread_tcb *zombie_thread;
@@ -182,6 +180,10 @@ int uthread_run(bool preempt, uthread_func_t func, void *arg)
 		}
 		//keep running different thread.
 		uthread_yield();
+		loop_time++;
+		if(loop_time = 3){
+			return 0;
+		}
 	}
 	return 0;
 }
