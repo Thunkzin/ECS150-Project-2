@@ -155,7 +155,7 @@ int uthread_run(bool preempt, uthread_func_t func, void *arg)
 
 
 	//set the current stack's state
-	idle_thread->thread_state = running;
+//	idle_thread->thread_state = running;
 	current = idle_thread;
 	//allocate current stack's memory 
 	current->stack = uthread_ctx_alloc_stack();
