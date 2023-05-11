@@ -166,11 +166,8 @@ int uthread_run(bool preempt, uthread_func_t func, void *arg)
 	uthread_create(func, arg);
 
 
-	int loop_time = 0;
+
 	while(queue_length(alive_thread_queue) > 0){
-		if(loop_time > 1){
-				return 0;
-		}
 		while(queue_length(zombie_thread_queue) > 0){
 			struct uthread_tcb *zombie_thread;
 			//move the dequeued data into zombie_thread's context, then remove the thread
@@ -180,8 +177,6 @@ int uthread_run(bool preempt, uthread_func_t func, void *arg)
 		}
 		//keep running different thread.
 		uthread_yield();
-		loop_time++;
-
 	}
 	return 0;
 }
