@@ -46,12 +46,11 @@ void uthread_yield(void)
 		queue_enqueue(alive_thread_queue, current);
 	}
 
-	struct uthread_tcb *popped_out_thread = NULL;
+	struct uthread_tcb *popped_out_thread;
 	//pop out the oldest thread from the queue, and store it into popped_out_thread
-	if(queue_dequeue(alive_thread_queue, (void**)popped_out_thread) != 0){
+	if(queue_dequeue(alive_thread_queue, (void**)&popped_out_thread) != 0){
 		//if error occurs, return
 		printf("line 53 error\n");
-
 		return;
 	}
 
