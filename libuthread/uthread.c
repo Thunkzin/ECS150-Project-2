@@ -163,7 +163,6 @@ int uthread_run(bool preempt, uthread_func_t func, void *arg)
 	uthread_create(func, arg);
 
 
-    preempt_start(true);
 	while(queue_length(alive_thread_queue) > 0){
 		while(queue_length(zombie_thread_queue) > 0){
 			struct uthread_tcb *zombie_thread;
