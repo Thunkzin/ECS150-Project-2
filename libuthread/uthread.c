@@ -15,8 +15,8 @@
 
 
 struct uthread_tcb *current;
-queue_t alive_thread_queue;
-queue_t zombie_thread_queue;
+static queue_t alive_thread_queue;
+static queue_t zombie_thread_queue;
 
 struct uthread_tcb {
 	enum { running, ready, blocked, zombie} thread_state;
@@ -199,4 +199,3 @@ void uthread_unblock(struct uthread_tcb *uthread)
 	queue_enqueue(alive_thread_queue, uthread);
 	return;
 }
-
