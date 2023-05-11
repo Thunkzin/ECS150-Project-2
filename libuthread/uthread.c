@@ -42,7 +42,7 @@ void uthread_yield(void)
 	if(current->thread_state == running){
 		//set the currently running thread's state into ready
 		current->thread_state = ready;
-
+		printf("line 45 \n");		
 		//put the ready thread into the alive_queue to wait for next run
 		queue_enqueue(alive_thread_queue, current);
 	}
@@ -54,11 +54,11 @@ void uthread_yield(void)
 	if(popped_out_thread->thread_state == ready){
 		//set the popped_out_thread into running
 		popped_out_thread->thread_state = running;	
+		printf("line 57 \n");
 		//turn current thread into the popped_out_thread (the snap shot is taken so it's fine)
+		current = popped_out_thread;
 		//switch the context between thread_snap_shot and popped_out_thread.
 		uthread_ctx_switch(current_thread_snap_shot->thread_context, popped_out_thread->thread_context);
-		current = popped_out_thread;
-
 	}
 
 }
