@@ -15,8 +15,8 @@
 
 
 struct uthread_tcb *current;
-static queue_t alive_thread_queue;
-static queue_t zombie_thread_queue;
+queue_t alive_thread_queue;
+queue_t zombie_thread_queue;
 
 struct uthread_tcb {
 	enum { running, ready, blocked, zombie} thread_state;
@@ -24,70 +24,6 @@ struct uthread_tcb {
 	uthread_ctx_t *thread_context;
 };
 
-int uthread_run(bool preempt, uthread_func_t func, void *arg)
-{
-/*
- * uthread_run - Run the multithreading library
- * @preempt: Preemption enable
- * @func: Function of the first thread to start
- * @arg: Argument to be passed to the first thread
- *
- * This function should only be called by the process' original execution
- * thread. It starts the multithreading scheduling library, and becomes the
- * "idle" thread. It returns once all the threads ha
- * ve finished running.
- *
- * If @preempt is `true`, then preemptive scheduling is enabled.
- *
- * Return: 0 in case of success, -1 in case of failure (e.g., memory allocation,
- * context creation).
- */
-
-	if(!preempt){
-		queue_t random_queue = queue_create();
-
-		printf("random:%i\n", queue_length(random_queue));
-
-		alive_thread_queue = queue_create();
-		printf("alive_thread_queue_length:%i\n", queue_length(random_queue));
-	}
-
-
-	//create the idle_thread
-	struct uthread_tcb *idle_thread = (struct uthread_tcb*)malloc(sizeof(struct uthread_tcb));
-	if(idle_thread == NULL){
-		return -1;
-	}
-	
-	//initialize the thread's context
-	idle_thread->thread_context = (uthread_ctx_t *)malloc(sizeof(uthread_ctx_t));
-
-
-
-	//set the current stack's state
-	idle_thread->thread_state = running;
-	current = idle_thread;
-	//allocate current stack's memory 
-	current->stack = uthread_ctx_alloc_stack();
-
-	uthread_ctx_init(current->thread_context, current->stack, func, arg);
-
-	// create the very first thread into the alive queue
-	uthread_create(func, arg);
-
-	while(queue_length(alive_thread_queue) > 0){
-		while(queue_length(zombie_thread_queue) > 0){
-			struct uthread_tcb *zombie_thread;
-			//move the dequeued data into zombie_thread's context, then remove the thread
-			queue_dequeue(zombie_thread_queue, (void**)&zombie_thread);
-			free(zombie_thread->thread_context);
-			uthread_ctx_destroy_stack(zombie_thread->stack);
-		}
-		//keep running different thread.
-		uthread_yield();
-	}
-	return 0;
-}
 
 
 struct uthread_tcb *uthread_current(void){
@@ -184,6 +120,70 @@ int uthread_create(uthread_func_t func, void *arg)
 	return 0;
 }
 
+int uthread_run(bool preempt, uthread_func_t func, void *arg)
+{
+/*
+ * uthread_run - Run the multithreading library
+ * @preempt: Preemption enable
+ * @func: Function of the first thread to start
+ * @arg: Argument to be passed to the first thread
+ *
+ * This function should only be called by the process' original execution
+ * thread. It starts the multithreading scheduling library, and becomes the
+ * "idle" thread. It returns once all the threads ha
+ * ve finished running.
+ *
+ * If @preempt is `true`, then preemptive scheduling is enabled.
+ *
+ * Return: 0 in case of success, -1 in case of failure (e.g., memory allocation,
+ * context creation).
+ */
+
+	if(!preempt){
+		queue_t random_queue = queue_create();
+
+		printf("random:%i\n", queue_length(random_queue));
+
+		alive_thread_queue = queue_create();
+		printf("alive_thread_queue_length:%i\n", queue_length(random_queue));
+	}
+
+	return 0;
+	//create the idle_thread
+	struct uthread_tcb *idle_thread = (struct uthread_tcb*)malloc(sizeof(struct uthread_tcb));
+	if(idle_thread == NULL){
+		return -1;
+	}
+	
+	//initialize the thread's context
+	idle_thread->thread_context = (uthread_ctx_t *)malloc(sizeof(uthread_ctx_t));
+
+
+
+	//set the current stack's state
+	idle_thread->thread_state = running;
+	current = idle_thread;
+	//allocate current stack's memory 
+	current->stack = uthread_ctx_alloc_stack();
+
+	uthread_ctx_init(current->thread_context, current->stack, func, arg);
+
+	// create the very first thread into the alive queue
+	uthread_create(func, arg);
+
+	while(queue_length(alive_thread_queue) > 0){
+		while(queue_length(zombie_thread_queue) > 0){
+			struct uthread_tcb *zombie_thread;
+			//move the dequeued data into zombie_thread's context, then remove the thread
+			queue_dequeue(zombie_thread_queue, (void**)&zombie_thread);
+			free(zombie_thread->thread_context);
+			uthread_ctx_destroy_stack(zombie_thread->stack);
+		}
+		//keep running different thread.
+		uthread_yield();
+	}
+	return 0;
+}
 
 
 void uthread_block(void)
