@@ -182,6 +182,7 @@ int uthread_run(bool preempt, uthread_func_t func, void *arg)
 
 void uthread_block(void)
 {
+	preempt_disable();
 	current->thread_state = blocked;
 	uthread_yield();
 	return;
@@ -189,6 +190,7 @@ void uthread_block(void)
 
 void uthread_unblock(struct uthread_tcb *uthread)
 {
+	preempt_enable();
 	uthread->thread_state = ready;
 	queue_enqueue(alive_thread_queue, uthread);
 	return;
