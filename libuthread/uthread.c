@@ -17,6 +17,7 @@
 struct uthread_tcb *current;
 queue_t alive_thread_queue;
 queue_t zombie_thread_queue;
+queue_t blocked_thread_queue;
 
 struct uthread_tcb {
 	enum { running, ready, blocked, zombie} thread_state;
@@ -45,6 +46,9 @@ void uthread_yield(void)
 		current->thread_state = ready;
 		//put the ready thread into the alive_queue to wait for next run
 		queue_enqueue(alive_thread_queue, current);
+	}
+	if(current->thread_state == blocked){
+		queue_enqueue(blocked_thread_queue, current);
 	}
 
 	//pop out the oldest thread from the queue, and store it into popped_out_thread
@@ -138,7 +142,7 @@ int uthread_run(bool preempt, uthread_func_t func, void *arg)
 
 	alive_thread_queue = queue_create();
 	zombie_thread_queue = queue_create();
-
+	blocked_thread_queue = queue_create();
 
 
 
