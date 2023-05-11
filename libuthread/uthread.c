@@ -140,9 +140,7 @@ int uthread_run(bool preempt, uthread_func_t func, void *arg)
 
 	preempt_start(preempt);
 	preempt_enable();
-	alive_thread_queue = queue_create();
-	zombie_thread_queue = queue_create();
-	blocked_thread_queue = queue_create();
+	alive_thread_queue = zombie_thread_queue = blocked_thread_queue = queue_create();
 
 
 	//create the idle_thread
@@ -186,7 +184,6 @@ int uthread_run(bool preempt, uthread_func_t func, void *arg)
 
 void uthread_block(void)
 {
-	preempt_disable();
 	current->thread_state = blocked;
 	uthread_yield();
 	return;
@@ -194,7 +191,6 @@ void uthread_block(void)
 
 void uthread_unblock(struct uthread_tcb *uthread)
 {
-	preempt_enable();
 	uthread->thread_state = ready;
 	queue_enqueue(alive_thread_queue, uthread);
 	queue_delete(blocked_thread_queue, uthread);
