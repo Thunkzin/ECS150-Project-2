@@ -13,7 +13,7 @@
 
 
 
-
+struct uthread_tcb *popped_out_thread;
 struct uthread_tcb *current;
 queue_t alive_thread_queue;
 queue_t zombie_thread_queue;
@@ -38,7 +38,7 @@ void uthread_yield(void)
  * This function is to be called from the currently active and running thread in
  * order to yield for other threads to execute.
  */
-	struct uthread_tcb *popped_out_thread;
+
 	if(current->thread_state == running){
 		//set the currently running thread's state into ready
 		current->thread_state = ready;
