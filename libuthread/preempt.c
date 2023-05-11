@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/time.h>
+#include <unistd.h>
 
 #include "private.h"
 #include "uthread.h"
@@ -15,23 +16,31 @@
  * 100Hz is 100 times per second
  */
 #define HZ 100
+#define MICROSEC 10000
+struct sigaction signal_action;
+struct sigaction old_signal_action;
+struct itimerval standard;
+struct itimerval old;
 
 bool enable_preempt = false;
+
+void signal_handler(int num){
+    uthread_yield();
+}
 
 /* this func can block signals of type SIGVTALRM */
 void preempt_disable(void)
 {
 	/* Create a signal set to hold the mask of blocked signals */
-    sigset_t block_alarm;
 
     /* Initialize the signal mask to be empty */
-    sigemptyset(&block_alarm);
+    sigemptyset(&signal_action.sa_mask);
 
     /* Add the SIGVTALRM signal to the signal set */
-    sigaddset(&block_alarm, SIGVTALRM);
+    sigaddset(&signal_action.sa_mask, SIGVTALRM);
 
     /* Block the SIGVTALRM signal in the current thread */
-    sigprocmask(SIG_BLOCK, &block_alarm, NULL);
+    sigprocmask(SIG_BLOCK, &signal_action.sa_mask, &old_signal_action.sa_mask);
 
     // Disable preemption only if it is currently enabled
     if (enable_preempt) {
@@ -43,16 +52,16 @@ void preempt_disable(void)
 void preempt_enable(void)
 {
 	// Create a signal set to hold the mask of unblocked signals
-    sigset_t unblock_alarm;
+
 
     // Initialize the signal set to be empty
-    sigemptyset(&unblock_alarm);
+    sigemptyset(&signal_action.sa_mask);
 
     // Add the SIGVTALRM signal to the signal set
-    sigaddset(&unblock_alarm, SIGVTALRM);
+    sigaddset(&signal_action.sa_mask, SIGVTALRM);
 
     // Unblock the SIGVTALRM signal in the current thread
-    sigprocmask(SIG_UNBLOCK, &unblock_alarm, NULL);
+    sigprocmask(SIG_UNBLOCK, &signal_action.sa_mask, &old_signal_action.sa_mask);
 
     // Enable preemption only if it is currently disabled
     if (!enable_preempt) {
@@ -80,19 +89,11 @@ void preempt_start(bool preempt)
 
 	/* if preempt is enabled */
 	if (preempt) {
-		// Create a signal action to handle SIGVTALRM signals 
-		struct sigaction action;
-		
-		action.sa_handler = &uthread_yield;	// set the signal handler to yield
-		sigemptyset(&action.sa_mask);	// Initialize the signal mask to be empty
-		action.sa_flags = SA_RESTART;
-		if (sigaction(SIGVTALRM, &action, NULL) == -1) {
-			perror("Error: cannot handle SIGVTALRM");
-			exit(EXIT_FAILURE);
-		}
-		// Configure a timer that will fire an alarm (through a SIGVTALRM signal) a hundred times per second (i.e. 100 Hz)
-
-  }
+        preempt_enable();
+        signal_action.sa_handler = signal_handler;
+        sigaction(SIGALRM, &signal_action, &old_signal_action);
+        ualarm(MICROSEC, 0);
+    }
 
 }
 
@@ -105,6 +106,8 @@ void preempt_stop(void)
  * Restore previous timer configuration, and previous action associated to
  * virtual alarm signals.
  */
-
+    // getitimer(ITIMER_VIRTUAL, );
+    preempt_disable();
+    signal_action = old_signal_action;
 }
 
