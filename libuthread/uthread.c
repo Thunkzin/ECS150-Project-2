@@ -168,7 +168,7 @@ int uthread_run(bool preempt, uthread_func_t func, void *arg)
 
 	int loop_time = 0;
 	while(queue_length(alive_thread_queue) > 0){
-		if(loop_time > 2){
+		if(loop_time > 1){
 				return 0;
 		}
 		while(queue_length(zombie_thread_queue) > 0){
