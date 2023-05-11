@@ -198,5 +198,6 @@ void uthread_unblock(struct uthread_tcb *uthread)
 	preempt_enable();
 	uthread->thread_state = ready;
 	queue_enqueue(alive_thread_queue, uthread);
+	queue_delete(blocked_thread_queue, uthread);
 	return;
 }
