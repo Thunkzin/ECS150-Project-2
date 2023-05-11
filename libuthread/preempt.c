@@ -24,7 +24,7 @@ struct itimerval old;
 
 bool enable_preempt = false;
 
-void signal_handler(int num){
+void signal_handler(){
     uthread_yield();
 }
 
