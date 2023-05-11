@@ -91,7 +91,7 @@ int sem_down(sem_t sem)
 	/* block semaphore when count is zero */
 	while(sem->sem_count == 0){
 		queue_enqueue(sem->waiting_queue,(void*)current_thread);
-		uthread_yield(); // 
+		uthread_block(); // 
 	}
 	return 0;
 }
