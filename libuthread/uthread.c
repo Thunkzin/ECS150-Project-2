@@ -52,7 +52,6 @@ void uthread_yield(void)
 		//if error occurs, return
 		return;
 	}
-	struct uthread_tcb *current_thread_snap_shot = uthread_current();
 
 	if(popped_out_thread->thread_state == ready){
 		//set the popped_out_thread into running
