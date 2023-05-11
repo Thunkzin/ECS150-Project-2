@@ -50,7 +50,7 @@ void uthread_yield(void)
 	//pop out the oldest thread from the queue, and store it into popped_out_thread
 	if(queue_dequeue(alive_thread_queue, (void**)popped_out_thread) != 0){
 		//if error occurs, return
-		printf("line 53 error");
+		printf("line 53 error\n");
 
 		return;
 	}
@@ -58,6 +58,7 @@ void uthread_yield(void)
 	if(popped_out_thread->thread_state == ready){
 		//set the popped_out_thread into running
 		popped_out_thread->thread_state = running;	
+		printf("line 61 \n");
 		//turn current thread into the popped_out_thread (the snap shot is taken so it's fine)
 		current = popped_out_thread;
 		//switch the context between thread_snap_shot and popped_out_thread.
