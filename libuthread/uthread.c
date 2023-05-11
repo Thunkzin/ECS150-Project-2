@@ -134,11 +134,11 @@ int uthread_run(bool preempt, uthread_func_t func, void *arg)
  * context creation).
  */
 
-	preempt_start();
-	if(!preempt){
-		alive_thread_queue = queue_create();
-		zombie_thread_queue = queue_create();
-	}
+	preempt_start(preempt);
+
+	alive_thread_queue = queue_create();
+	zombie_thread_queue = queue_create();
+
 
 
 
