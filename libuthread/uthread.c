@@ -60,7 +60,7 @@ void uthread_yield(void)
 		//turn current thread into the popped_out_thread (the snap shot is taken so it's fine)
 		current = popped_out_thread;
 		//switch the context between thread_snap_shot and popped_out_thread.
-		uthread_ctx_switch(current_thread_snap_shot->thread_context, popped_out_thread->thread_context);
+		uthread_ctx_switch(current->thread_context, popped_out_thread->thread_context);
 	}
 
 }
@@ -181,7 +181,7 @@ int uthread_run(bool preempt, uthread_func_t func, void *arg)
 		//keep running different thread.
 		uthread_yield();
 		loop_time++;
-		if(loop_time = 3){
+		if(loop_time == 3){
 			return 0;
 		}
 	}
