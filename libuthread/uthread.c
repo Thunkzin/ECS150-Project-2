@@ -140,7 +140,9 @@ int uthread_run(bool preempt, uthread_func_t func, void *arg)
 
 	preempt_start(preempt);
 	preempt_enable();
-	alive_thread_queue = zombie_thread_queue = blocked_thread_queue = queue_create();
+	alive_thread_queue = queue_create();
+	zombie_thread_queue = queue_create();
+	blocked_thread_queue = queue_create();
 
 
 	//create the idle_thread
