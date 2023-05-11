@@ -38,7 +38,7 @@ void uthread_yield(void)
  * This function is to be called from the currently active and running thread in
  * order to yield for other threads to execute.
  */
-
+	struct uthread_tcb *popped_out_thread;
 	if(current->thread_state == running){
 		//set the currently running thread's state into ready
 		current->thread_state = ready;
@@ -46,23 +46,17 @@ void uthread_yield(void)
 		queue_enqueue(alive_thread_queue, current);
 	}
 
-	struct uthread_tcb *popped_out_thread = NULL;
 	//pop out the oldest thread from the queue, and store it into popped_out_thread
-	if(queue_dequeue(alive_thread_queue, (void**)popped_out_thread) != 0){
-		//if error occurs, return
-		printf("line 53 error\n");
-
-		return;
-	}
+	queue_dequeue(alive_thread_queue, (void**)popped_out_thread);
 
 	if(popped_out_thread->thread_state == ready){
 		//set the popped_out_thread into running
 		popped_out_thread->thread_state = running;	
 		printf("line 61 \n");
 		//turn current thread into the popped_out_thread (the snap shot is taken so it's fine)
-		current = popped_out_thread;
 		//switch the context between thread_snap_shot and popped_out_thread.
 		uthread_ctx_switch(current->thread_context, popped_out_thread->thread_context);
+		current = popped_out_thread;
 	}
 
 }
