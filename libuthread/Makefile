@@ -3,7 +3,7 @@ objects := queue.o uthread.o context.o preempt.o sem.o
 flags := -Wall -Wextra -Werror -g
 
 all: $(lib)
-$(lib): $(objects)
+$(lib):  $(objects)
 	ar rcs $(lib) $(objects)
 
 queue.o: queue.c queue.h
