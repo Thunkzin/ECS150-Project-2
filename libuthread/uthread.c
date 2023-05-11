@@ -113,6 +113,7 @@ int uthread_create(uthread_func_t func, void *arg)
 	uthread_ctx_init(new_thread->thread_context, new_thread->stack, func, arg);
 	//enqueue the thread into the queue
 	queue_enqueue(alive_thread_queue, new_thread);
+	printf("line 116 alive_thread_queue_length:%i\n", queue_length(alive_thread_queue));
 
 	if(new_thread == NULL){
 		return -1;
@@ -140,15 +141,13 @@ int uthread_run(bool preempt, uthread_func_t func, void *arg)
  */
 
 	if(!preempt){
-		queue_t random_queue = queue_create();
-
-		printf("random:%i\n", queue_length(random_queue));
-
 		alive_thread_queue = queue_create();
+		zombie_thread_queue = queue_create();
 		printf("alive_thread_queue_length:%i\n", queue_length(random_queue));
 	}
 
-	return 0;
+
+
 	//create the idle_thread
 	struct uthread_tcb *idle_thread = (struct uthread_tcb*)malloc(sizeof(struct uthread_tcb));
 	if(idle_thread == NULL){
