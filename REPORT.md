@@ -54,6 +54,46 @@ setting its state into zombie, and enquqe it into zombie queue.
 
 ### test_preempt.c
  
+The test_preempt.c that we made was modded from the uthread_yield.c. Firstly we   
+set the boolean parameter in the uthread_run to true, and create a thread1 that 
+will enter an infinite loop that prints "1" repeatly.  
+
+In the thread1, it will create the other thread2 which is almost identical to 
+thread1, but create the new thread calls thread3, and prints"2" instead. 
+Unlike thread1 and thread2, thread3 will only prints a message that shows 
+program entered thread3, then terminateds the program.
+
+Since we didn't call any uthread_yield function in our test program, we can 
+guarantee that if the program successfully calls yield function, it's from the 
+signal handler in preempt.c when it received the SIGVTALRM signal from timer.
+
+Therefore, if the program is working without issues, then test_preempt should
+perform as below:
+
+1.  Action: uthread_run(thread1)
+    Currently running thread1 and print tons of 1.
+    Alive_queue: empty
+
+2.  Action: uthread_create(thread2)
+    Currently running thread1 and print tons of 1.
+    Alive_queue: thread2
+
+3.  Action: uthread_yields() by signal handler
+    Currently running thread2 and print tons of 2.
+    Alive_queue: thread1
+
+4.  Action: uthread_create(thread3)
+    Currently running thread2 and print tons of 2.
+    Alive_queue: thread1 - thread3
+
+5.  Action: uthread_yields() by signal handler
+    Currently running thread1 and print tons of 1.
+    Alive_queue: thread3 - thread2
+
+6.  Action: uthread_yields() by signal handler
+    Currently running thread3, print the message and exit the test.
+    Alive_queue: thread2 - thread1
+
 
 
 
