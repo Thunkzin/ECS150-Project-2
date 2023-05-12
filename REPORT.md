@@ -4,16 +4,14 @@
 This program is a basic `user-level thread` library that provides an interface 
 forapplications to create and run independent threads concurrently. 
 
-This library alsoprovides features such as semaphores, preemption, timer, and signal handlers tomake sure the two threads do not encounter any `race conditions` and synchronize witheach other.
+This library alsoprovides features such as semaphores, preemption, timer, and 
+signal handlers tomake sure the two threads do not encounter any `race 
+conditions` and synchronize witheach other.
 
 The `queue` API is implemented to manage the execution order of the threads. 
-
 The `uthread` API is used to create and manage threads at the user levels. 
-
 The `semaphores` API is used to synchronize access to shared resources between 
-threads. 
-
-`Preemption` is a feature that allows the OS to interrupt a running 
+threads. `Preemption` is a feature that allows the OS to interrupt a running 
 thread and switch to another thread.
 
 ## Phase 1: queue API
@@ -73,7 +71,6 @@ it to the alive queue.
 The last function is uthread_exit(), which terminate the current running thread,
 setting its state into zombie, and enquqe it into zombie queue.
 
-
 ### Phase 3: semaphore API
 Semaphore API primarily consists of four functions: sem_create(), sem_destroy
 (), sem_down(), and sem_up(). The goal is to prevent the multiple threads from 
@@ -114,7 +111,6 @@ Next, by using a sigaction function, whenever sigaction received a signal in
 type of SIGVTALRM, it will goes into the handler and calls yield function. And 
 the SIGVTALRM signal will be provides by the timer setted by using setitimer 
 function.
-
 
 ### test_preempt.c
 
