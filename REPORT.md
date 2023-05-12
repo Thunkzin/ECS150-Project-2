@@ -102,11 +102,18 @@ if statement by dequeuing the oldest thread from the waiting_queue and unlocks
 it using `unthread_ublock`. 
 
 ### Phase 4: preemption
+The goal of the use of preemption in user-level threading is to prevent one 
+thread to take control of cpu entirely and it does not get yielded by 
+uthread_yield() or semaphore. The functions implemented under preempt.c make 
+sure all threads have a timer interrupt which is frequency 100hz to forcefully 
+yield it to the other thread and maximize the use of CPU. 
 
-The goal of the use of preemption in user-level threading is to prevent one thread to take control of cpu entirely and it does not get yielded by uthread_yield() or semaphore. The functions implemented under preempt.c make sure all threads have a timer interrupt which is frequency 100hz to forcefully yield it to the other thread and maximize the use of CPU. 
-
-
-preempt_disable() and preempt_enable() work similarly. First we declare a boolean variable `enable_preempt` set equal to false by default. The two functions enable and disable back the preempt if there were previously set otherwise. Both functions can also handle SIGVTALRM block signals which is implemented by initializing an empty signal set sigemptyset and add it to signal set sigaddset. 
+preempt_disable() and preempt_enable() work similarly. First we declare a 
+boolean variable `enable_preempt` set equal to false by default. The two 
+functions enable and disable back the preempt if there were previously set 
+otherwise. Both functions can also handle SIGVTALRM block signals which is 
+implemented by initializing an empty signal set sigemptyset and add it to 
+signal set sigaddset. 
 
 For the function preempt_start(), we first set the value and interval for 
 settimer function into 10000 microsecond (converted from 100hz). Then enable 
@@ -118,7 +125,6 @@ the SIGVTALRM signal will be provides by the timer setted by using setitimer
 function.
 
 ### test_preempt.c
-
 The test_preempt.c that we made was modded from the uthread_yield.c. Firstly we 
 set the boolean parameter in the uthread_run to true, and create a thread1 that 
 will enter an infinite loop that prints "1" repeatly.  
@@ -135,8 +141,8 @@ signal handler in preempt.c when it received the SIGVTALRM signal from timer.
 Therefore, if the program is working without issues, then test_preempt should
 perform as below:
 
-1.  Action: uthread_run(thread1), Currently running thread1 and print tons of 1, 
-Alive_queue: empty
+1.  Action: uthread_run(thread1), Currently running thread1 and print tons of 
+1, Alive_queue: empty
 2.  Action: uthread_create(thread2), Currently running thread1 and print tons 
 of 1, Alive_queue: thread2
 3.  Action: uthread_yields() by signal handlel, Currently running thread2 and 
@@ -149,7 +155,6 @@ print tons of 1, Alive_queue: thread3 - thread2
  the message and exit the test, Alive_queue: thread2 - thread1
 
 ### Debugging issues
-
 We didn't encountered any serious bugs on queue section, we can simply make and 
 run the test with it. However, when we includes the uthread.c the compiler 
 comes out with following error messages:
@@ -182,7 +187,6 @@ which makes the program stucked in the while loops, and the code works
 perfectly fine after we delete that extra line.
 
 ### Resources
-
 https://www.gnu.org/software/libc/manual/2.36/html_mono/libc.html#Signal-Actions
 https://www.gnu.org/software/libc/manual/2.36/html_mono/libc.html#Setting-an-Ala
 rm
