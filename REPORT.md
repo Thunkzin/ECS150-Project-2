@@ -103,6 +103,11 @@ it using `unthread_ublock`.
 
 ### Phase 4: preemption
 
+The goal of the use of preemption in user-level threading is to prevent one thread to take control of cpu entirely and it does not get yielded by uthread_yield() or semaphore. The functions implemented under preempt.c make sure all threads have a timer interrupt which is frequency 100hz to forcefully yield it to the other thread and maximize the use of CPU. 
+
+
+preempt_disable() and preempt_enable() work similarly. First we declare a boolean variable `enable_preempt` set equal to false by default. The two functions enable and disable back the preempt if there were previously set otherwise. Both functions can also handle SIGVTALRM block signals which is implemented by initializing an empty signal set sigemptyset and add it to signal set sigaddset. 
+
 For the function preempt_start(), we first set the value and interval for 
 settimer function into 10000 microsecond (converted from 100hz). Then enable 
 the preemption so that the signal can be received by handler. 
