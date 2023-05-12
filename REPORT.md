@@ -99,7 +99,8 @@ error: The deprecated ucontext routines require _XOPEN_SOURCE to be defined
 Nevertheless, our code didn't get the same issues running gradescope's test, so
 we consider it being the issues due to the local OS in our system.
 
-Thus, we debug our code mostly with gradescope's error message.
+Thus, we debug our code mostly with gradescope's error message and CSIF's 
+system.
 
 We encountered the first bug on phase 2, which was the segmantation fault while
 testing uthread_hello.c.
