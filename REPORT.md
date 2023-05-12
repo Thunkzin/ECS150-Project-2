@@ -87,15 +87,37 @@ print tons of 1, Alive_queue: thread3 - thread2
 
 6.  Action: uthread_yields() by signal handler, Currently running thread3, print
  the message and exit the test, Alive_queue: thread2 - thread1
-
-
-
-
-
-
-
 ### Debugging issues
 
+We didn't encountered any serious bugs on queue section, we can simply make and 
+run the test with it. However, when we includes the uthread.c the compiler 
+comes out with following error messages:
+
+error: The deprecated ucontext routines require _XOPEN_SOURCE to be defined
+
+Nevertheless, our code didn't get the same issues running gradescope's test, so
+we consider it being the issues due to the local OS in our system.
+
+Thus, we debug our code mostly with gradescope's error message.
+
+We encountered the first bug on phase 2, which was the segmantation fault while
+testing uthread_hello.c.
+
+The bug was caused by the inapproprate use of malloc() function, in 
+uthread_create(), which didn't takes us a lot of time to deal with.
+
+The second bugs that we encountered was the one that bother us the most, which 
+our uthread_hello.c and uthread_yield.c test doesn't print out any message.
+
+It doesn't take us much time that it's because we didn't apply queue_create 
+function to our global queue: alive_queue, and zombie_queue. However, when we 
+call the queue_create function, the test entered a infinite loop which lead to 
+a timeout condition.
+
+Finally, we found it was inappropriately setting the idle_thread's state into 
+ready that caused the bug, since the idle_thread will stuck in alive_queue, 
+which makes the program stucked in the while loops, and the code works 
+perfectly fine after we delete that extra line.
 
 
 
