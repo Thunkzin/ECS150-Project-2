@@ -146,10 +146,6 @@ ready that caused the bug, since the idle_thread will stuck in alive_queue,
 which makes the program stucked in the while loops, and the code works 
 perfectly fine after we delete that extra line.
 
-
-
-
-
 ### Resources
 
 https://www.gnu.org/software/libc/manual/2.36/html_mono/libc.html#Signal-Actions
