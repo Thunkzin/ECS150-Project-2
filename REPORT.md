@@ -104,15 +104,16 @@ waiting on the semaphore. If it is true, it executes the statements under the
 if statement by dequeuing the oldest thread from the waiting_queue and unlocks 
 it using `unthread_ublock`. 
 
-
 ### Phase 4: preemption
 
 For the function preempt_start(), we first set the value and interval for 
 settimer function into 10000 microsecond (converted from 100hz). Then enable 
-the preemption so that the signal can be received by handler. Next, by using a 
-sigaction function, whenever sigaction received a signal in type of SIGVTALRM, 
-it will goes into the handler and calls yield function. And the SIGVTALRM 
-signal will be provides by the timer setted by using setitimer function.
+the preemption so that the signal can be received by handler. 
+
+Next, by using a sigaction function, whenever sigaction received a signal in 
+type of SIGVTALRM, it will goes into the handler and calls yield function. And 
+the SIGVTALRM signal will be provides by the timer setted by using setitimer 
+function.
 
 
 ### test_preempt.c
