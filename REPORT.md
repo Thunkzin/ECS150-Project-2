@@ -1,21 +1,46 @@
 # ECS150_Project#2: User-level thread libray
 
 ## Summary
-This program is a basic `user-level thread` library that provides an interface for 
-applications to create and run independent threads concurrenlty. This library also 
-provides features such as semaphores, preemption, timer, and signal handlers to 
-make sure the two threads do not encounter any `race conditions` and synchronize with 
-each other. 
+This program is a basic `user-level thread` library that provides an interface for
+applications to create and run independent threads concurrently. This library also
+provides features such as semaphores, preemption, timer, and signal handlers to
+make sure the two threads do not encounter any `race conditions` and synchronize with
+each other.
 
-The `queue` API is implmented to manage the execution order of the threads. The `uthread` 
-API is used to create and mangae threads at the user levles. The `semaphores` API is used 
-to synchronize access to shared resources between threads. `Preemption` is a feature that 
-allows the OS to interrupt a running thread and switch to another thread. 
+The `queue` API is implemented to manage the execution order of the threads. The 
+`uthread` API is used to create and manage threads at the user levels. The 
+`semaphores` API is used to synchronize access to shared resources between threads. 
+`Preemption` is a feature that allows the OS to interrupt a running thread and switch 
+to another thread.
 
+## Phase 1: queue API
+The queue API we implemented uses a linked list data structure to achieve a FIFO 
+method where data is enqueued one after another. First, we declare a struct to store 
+the nodes' data `element_data_address` and the address of the next node`next_element` 
+using the pointers. The first element in the linked list is called `first` and the 
+last element is called `last.` 
 
-### Phase 1: queue API
+The function `queue_create()` allocates an empty queue dynamically using `malloc`. 
+Since the data size is unknown, we use malloc to prevent the error of running out of 
+memory when creating a new queue. The queue is initially empty and there is no data 
+stored inside. So, we set its `queue_size` to be zero and the first and last pointers 
+of the queue to point to NULL. The function `queue_destroy()` deallocates the memory 
+created for the queue from the heap. If the queue is non-empty, it will free the 
+memory consumed by the queue using `free(queue)` and otherwise, it will return -1. 
 
+When a thread calls `queue_enqueue()` function, it is added to the very end of the 
+queue. When a thread calls `queue_dequeue()`function, the queue removes the first 
+(oldest) thread in the queue and stores its data in the memory pointed by @data. 
 
+The function `queue_delete()`is responsible for deleting the oldest thread in the 
+queue that contains the pointer data which is passed as the function’s arguments. We 
+use a while loop to iterate through every item in the queue to find the data. If the 
+data is found, it will delete the data by using `free(current)` and -1 if it fails.
+ 
+The function `queue_iterate()` provides a way to call a function within its own. It 
+has two parameters: `queue` to iterate over and `func` to be called on each item of 
+the queue. The function iterates starting from the oldest up until the newly added 
+item using if statement.
 
 ### Phase 2: uthread API
 The uthread API library in this program creates a new threads, and store each 
