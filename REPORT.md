@@ -20,7 +20,28 @@ allows the OS to interrupt a running thread and switch to another thread.
 ### Phase 2: uthread API
 The uthread API library in this program creates a new threads, and store each 
 thread in the queue by including the queue_t API we creates in previous phase.
-####
+
+Firstly, we define two queue, to store the threads that are still alive (can be
+changed between states running, ready, and blocked), and the threads that will 
+never go back to above states.
+
+The very first function that will be called in the main to implement the 
+uthread is uthread_run(the thread function), which create an idle thread, that 
+keep yielding, and the first thread that will act 
+as current thread.
+
+Then, it will enter the while loop that keeps yielding the very first threads 
+in the alive queue by changing the current thread's state, takes a snap shot of 
+current thread's context, then apply enqueue and dequeue function to store the
+current threads and pop out next threads. 
+
+The second function that will be applied mainly is uthread_create(the thread 
+function to be create), which will literally create a thread, allocate the 
+memory for itself and its context, then set its state to ready, finally enqueue 
+it to the alive queue.
+
+The last function is uthread_exit(), which terminate the current running thread,
+setting its state into zombie, and enquqe 
 
 
 ### Phase 3: semaphore API
