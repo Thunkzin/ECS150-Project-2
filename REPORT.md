@@ -1,12 +1,17 @@
 # ECS150_Project#2: User-level thread libray
 
 ## Summary
+This program is a basic `user-level thread` library that provides an interface for 
+applications to create and run independent threads concurrenlty. This library also 
+provides features such as semaphores, preemption, timer, and signal handlers to 
+make sure the two threads do not encounter any `race conditions` and synchronize with 
+each other. 
 
-This program is a basic `user-level thread` library for that allows users to 
-create threads
+The `queue` API is implmented to manage the execution order of the threads. The `uthread` 
+API is used to create and mangae threads at the user levles. The `semaphores` API is used 
+to synchronize access to shared resources between threads. `Preemption` is a feature that 
+allows the OS to interrupt a running thread and switch to another thread. 
 
-The implementation of this program follows following steps:
-1. 
 
 ### Phase 1: queue API
 
