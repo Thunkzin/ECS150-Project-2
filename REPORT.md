@@ -1,4 +1,4 @@
-# ECS150_Project#2: A basic user-level thread libray
+# ECS150_Project#2: User-level thread libray
 
 ## Summary
 
