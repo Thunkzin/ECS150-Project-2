@@ -53,8 +53,7 @@ setting its state into zombie, and enquqe it into zombie queue.
 
 
 ### test_preempt.c
- 
-The test_preempt.c that we made was modded from the uthread_yield.c. Firstly we   
+ The test_preempt.c that we made was modded from the uthread_yield.c. Firstly we   
 set the boolean parameter in the uthread_run to true, and create a thread1 that 
 will enter an infinite loop that prints "1" repeatly.  
 
@@ -79,8 +78,8 @@ perform as below:
     Alive_queue: thread2
 
 3.  Action: uthread_yields() by signal handler
-    Currently running thread2 and print tons of 2.
-    Alive_queue: thread1
+        Currently running thread2 and print tons of 2.
+            Alive_queue: thread1
 
 4.  Action: uthread_create(thread3)
     Currently running thread2 and print tons of 2.
@@ -93,6 +92,7 @@ perform as below:
 6.  Action: uthread_yields() by signal handler
     Currently running thread3, print the message and exit the test.
     Alive_queue: thread2 - thread1
+
 
 
 
