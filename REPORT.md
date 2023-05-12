@@ -87,6 +87,7 @@ print tons of 1, Alive_queue: thread3 - thread2
 
 6.  Action: uthread_yields() by signal handler, Currently running thread3, print
  the message and exit the test, Alive_queue: thread2 - thread1
+
 ### Debugging issues
 
 We didn't encountered any serious bugs on queue section, we can simply make and 
