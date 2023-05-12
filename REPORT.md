@@ -69,8 +69,32 @@ setting its state into zombie, and enquqe it into zombie queue.
 
 
 ### Phase 3: semaphore API
+Semaphore API primarily consists of four functions: sem_create(), sem_destroy(), 
+sem_down(), and sem_up(). The goal is to prevent the multiple threads from accessing 
+the shared data resources at the same time which could lead to `racing conditions.` 
+We use a struct called “semaphore” to store a semaphore count `sem_count` to keep track 
+of the available resources and a pointer `waiting_queue` to store the waiting threads 
+which are blocked to wait to access. 
 
+In the sem_create() function, we dynamically allocate memory for a semaphore and 
+initialize its `sem_count`. The function returns -1 if its memory allocation fails and 
+NULL otherwise. 
 
+sem_destroy() function destroys a previously created semaphore. It takes a single 
+argument `sem_t sem` that represents the semaphore to deallocate. It checks if there 
+are any threads in the waiting queue before it frees the memory allocated using the if 
+statement. If the waiting queue is not empty, the function cannot destroy memory and 
+return -1. 
+
+sem_down() function blocks the thread by enqueuing it onto semaphore’s waiting_queue when 
+`sem_count` is already 0 which means there is no available resource to access. Otherwise 
+it increments `sem_count` by one. 
+
+sem_up() function first increments count by one. It then checks if the semaphore’s 
+`waiting_queue` is greater than zero, meaning there are threads waiting on the 
+semaphore. If it is true, it executes the statements under the if statement by 
+dequeuing the oldest thread from the waiting_queue and unlocks it using 
+`unthread_ublock`. 
 
 
 ### Phase 4: preemption
