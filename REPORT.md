@@ -1,46 +1,52 @@
 # ECS150_Project#2: User-level thread libray
 
 ## Summary
-This program is a basic `user-level thread` library that provides an interface for
-applications to create and run independent threads concurrently. This library also
-provides features such as semaphores, preemption, timer, and signal handlers to
-make sure the two threads do not encounter any `race conditions` and synchronize with
-each other.
+This program is a basic `user-level thread` library that provides an interface 
+forapplications to create and run independent threads concurrently. 
 
-The `queue` API is implemented to manage the execution order of the threads. The 
-`uthread` API is used to create and manage threads at the user levels. The 
-`semaphores` API is used to synchronize access to shared resources between threads. 
-`Preemption` is a feature that allows the OS to interrupt a running thread and switch 
-to another thread.
+This library alsoprovides features such as semaphores, preemption, timer, and signal handlers tomake sure the two threads do not encounter any `race conditions` and synchronize witheach other.
+
+The `queue` API is implemented to manage the execution order of the threads. 
+
+The `uthread` API is used to create and manage threads at the user levels. 
+
+The `semaphores` API is used to synchronize access to shared resources between 
+threads. 
+
+`Preemption` is a feature that allows the OS to interrupt a running 
+thread and switch to another thread.
 
 ## Phase 1: queue API
-The queue API we implemented uses a linked list data structure to achieve a FIFO 
-method where data is enqueued one after another. First, we declare a struct to store 
-the nodes' data `element_data_address` and the address of the next node`next_element` 
-using the pointers. The first element in the linked list is called `first` and the 
-last element is called `last.` 
+The queue API we implemented uses a linked list data structure to achieve a 
+FIFO method where data is enqueued one after another. First, we declare a 
+struct to store the nodes' data `element_data_address` and the address of the 
+next node`next_element` using the pointers. The first element in the linked 
+list is called `first` and the last element is called `last.` 
 
-The function `queue_create()` allocates an empty queue dynamically using `malloc`. 
-Since the data size is unknown, we use malloc to prevent the error of running out of 
-memory when creating a new queue. The queue is initially empty and there is no data 
-stored inside. So, we set its `queue_size` to be zero and the first and last pointers 
-of the queue to point to NULL. The function `queue_destroy()` deallocates the memory 
-created for the queue from the heap. If the queue is non-empty, it will free the 
-memory consumed by the queue using `free(queue)` and otherwise, it will return -1. 
+The function `queue_create()` allocates an empty queue dynamically using 
+`malloc`. Since the data size is unknown, we use malloc to prevent the error of 
+running out of memory when creating a new queue. The queue is initially empty 
+and there is no data stored inside. So, we set its `queue_size` to be zero and 
+the first and last pointers of the queue to point to NULL. The function 
+`queue_destroy()` deallocates the memory created for the queue from the heap. 
+If the queue is non-empty, it will free the memory consumed by the queue using 
+`free(queue)` and otherwise, it will return -1. 
 
-When a thread calls `queue_enqueue()` function, it is added to the very end of the 
-queue. When a thread calls `queue_dequeue()`function, the queue removes the first 
-(oldest) thread in the queue and stores its data in the memory pointed by @data. 
+When a thread calls `queue_enqueue()` function, it is added to the very end of 
+the queue. When a thread calls `queue_dequeue()`function, the queue removes the 
+first (oldest) thread in the queue and stores its data in the memory pointed by 
+@data. 
 
-The function `queue_delete()`is responsible for deleting the oldest thread in the 
-queue that contains the pointer data which is passed as the function’s arguments. We 
-use a while loop to iterate through every item in the queue to find the data. If the 
-data is found, it will delete the data by using `free(current)` and -1 if it fails.
+The function `queue_delete()`is responsible for deleting the oldest thread in 
+the queue that contains the pointer data which is passed as the function’s 
+arguments. We use a while loop to iterate through every item in the queue to 
+find the data. If the data is found, it will delete the data by using `free
+(current)` and -1 if it fails.
  
-The function `queue_iterate()` provides a way to call a function within its own. It 
-has two parameters: `queue` to iterate over and `func` to be called on each item of 
-the queue. The function iterates starting from the oldest up until the newly added 
-item using if statement.
+The function `queue_iterate()` provides a way to call a function within its 
+own. It has two parameters: `queue` to iterate over and `func` to be called on 
+each item of the queue. The function iterates starting from the oldest up until 
+the newly added item using if statement.
 
 ### Phase 2: uthread API
 The uthread API library in this program creates a new threads, and store each 
@@ -69,41 +75,49 @@ setting its state into zombie, and enquqe it into zombie queue.
 
 
 ### Phase 3: semaphore API
-Semaphore API primarily consists of four functions: sem_create(), sem_destroy(), 
-sem_down(), and sem_up(). The goal is to prevent the multiple threads from accessing 
-the shared data resources at the same time which could lead to `racing conditions.` 
-We use a struct called “semaphore” to store a semaphore count `sem_count` to keep track 
-of the available resources and a pointer `waiting_queue` to store the waiting threads 
-which are blocked to wait to access. 
+Semaphore API primarily consists of four functions: sem_create(), sem_destroy
+(), sem_down(), and sem_up(). The goal is to prevent the multiple threads from 
+accessing the shared data resources at the same time which could lead to 
+`racing conditions.` 
 
-In the sem_create() function, we dynamically allocate memory for a semaphore and 
-initialize its `sem_count`. The function returns -1 if its memory allocation fails and 
-NULL otherwise. 
+We use a struct called “semaphore” to store a semaphore count `sem_count` to 
+keep track of the available resources and a pointer `waiting_queue` to store 
+the waiting threads which are blocked to wait to access. 
 
-sem_destroy() function destroys a previously created semaphore. It takes a single 
-argument `sem_t sem` that represents the semaphore to deallocate. It checks if there 
-are any threads in the waiting queue before it frees the memory allocated using the if 
-statement. If the waiting queue is not empty, the function cannot destroy memory and 
-return -1. 
+In the sem_create() function, we dynamically allocate memory for a semaphore 
+and initialize its `sem_count`. The function returns -1 if its memory 
+allocation fails and NULL otherwise. 
 
-sem_down() function blocks the thread by enqueuing it onto semaphore’s waiting_queue when 
-`sem_count` is already 0 which means there is no available resource to access. Otherwise 
-it increments `sem_count` by one. 
+sem_destroy() function destroys a previously created semaphore. It takes a 
+single argument `sem_t sem` that represents the semaphore to deallocate. It 
+checks if there are any threads in the waiting queue before it frees the memory 
+allocated using the if statement. If the waiting queue is not empty, the 
+function cannot destroy memory and return -1. 
 
-sem_up() function first increments count by one. It then checks if the semaphore’s 
-`waiting_queue` is greater than zero, meaning there are threads waiting on the 
-semaphore. If it is true, it executes the statements under the if statement by 
-dequeuing the oldest thread from the waiting_queue and unlocks it using 
-`unthread_ublock`. 
+sem_down() function blocks the thread by enqueuing it onto semaphore’s 
+waiting_queue when `sem_count` is already 0 which means there is no available 
+resource to access. Otherwise it increments `sem_count` by one. 
+
+sem_up() function first increments count by one. It then checks if the 
+semaphore’s `waiting_queue` is greater than zero, meaning there are threads 
+waiting on the semaphore. If it is true, it executes the statements under the 
+if statement by dequeuing the oldest thread from the waiting_queue and unlocks 
+it using `unthread_ublock`. 
 
 
 ### Phase 4: preemption
 
+For the function preempt_start(), we first set the value and interval for 
+settimer function into 10000 microsecond (converted from 100hz). Then enable 
+the preemption so that the signal can be received by handler. Next, by using a 
+sigaction function, whenever sigaction received a signal in type of SIGVTALRM, 
+it will goes into the handler and calls yield function. And the SIGVTALRM 
+signal will be provides by the timer setted by using setitimer function.
 
 
 ### test_preempt.c
 
-The test_preempt.c that we made was modded from the uthread_yield.c. Firstly we   
+The test_preempt.c that we made was modded from the uthread_yield.c. Firstly we 
 set the boolean parameter in the uthread_run to true, and create a thread1 that 
 will enter an infinite loop that prints "1" repeatly.  
 
