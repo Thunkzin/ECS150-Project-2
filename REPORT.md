@@ -23,12 +23,11 @@ thread in the queue by including the queue_t API we creates in previous phase.
 
 Firstly, we define two queue, to store the threads that are still alive (can be
 changed between states running, ready, and blocked), and the threads that will 
-never go back to above states.
+never go back to above states(store the thread with zombie state).
 
 The very first function that will be called in the main to implement the 
 uthread is uthread_run(the thread function), which create an idle thread, that 
-keep yielding, and the first thread that will act 
-as current thread.
+keep yielding, and the first thread that will act as current thread.
 
 Then, it will enter the while loop that keeps yielding the very first threads 
 in the alive queue by changing the current thread's state, takes a snap shot of 
@@ -41,7 +40,7 @@ memory for itself and its context, then set its state to ready, finally enqueue
 it to the alive queue.
 
 The last function is uthread_exit(), which terminate the current running thread,
-setting its state into zombie, and enquqe 
+setting its state into zombie, and enquqe it into zombie queue.
 
 
 ### Phase 3: semaphore API
