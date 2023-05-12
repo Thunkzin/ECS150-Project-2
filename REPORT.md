@@ -132,19 +132,14 @@ perform as below:
 
 1.  Action: uthread_run(thread1), Currently running thread1 and print tons of 1, 
 Alive_queue: empty
-
 2.  Action: uthread_create(thread2), Currently running thread1 and print tons 
 of 1, Alive_queue: thread2
-
 3.  Action: uthread_yields() by signal handlel, Currently running thread2 and 
 print tons of 2, Alive_queue: thread1
-
 4.  Action: uthread_create(thread3), Currently running thread2 and print tons of
 2, Alive_queue: thread1 - thread3
-
 5.  Action: uthread_yields() by signal handler, Currently running thread1 and 
 print tons of 1, Alive_queue: thread3 - thread2
-
 6.  Action: uthread_yields() by signal handler, Currently running thread3, print
  the message and exit the test, Alive_queue: thread2 - thread1
 
