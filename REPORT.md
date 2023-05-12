@@ -2,8 +2,8 @@
 
 ## Summary
 
-This program is a basic `user-level thread` library for that allows users to create 
-threads
+This program is a basic `user-level thread` library for that allows users to 
+create threads
 
 The implementation of this program follows following steps:
 1. 
@@ -13,7 +13,9 @@ The implementation of this program follows following steps:
 
 
 ### Phase 2: uthread API
-
+The uthread API library in this program creates a new threads, and store each 
+thread in the queue by including the queue_t API we creates in previous phase.
+####
 
 
 ### Phase 3: semaphore API
@@ -41,4 +43,5 @@ The implementation of this program follows following steps:
 ### Resources
 
 https://www.gnu.org/software/libc/manual/2.36/html_mono/libc.html#Signal-Actions
-https://www.gnu.org/software/libc/manual/2.36/html_mono/libc.html#Setting-an-Alarm
+https://www.gnu.org/software/libc/manual/2.36/html_mono/libc.html#Setting-an-Ala
+rm
